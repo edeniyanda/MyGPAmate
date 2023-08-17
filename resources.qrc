@@ -1,0 +1,13 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+    <qresource>
+        <file>assets/images/dashboard_dark.png</file>
+        <file>assets/images/dashboard_white.png</file>
+        <file>assets/images/dashb.png</file>
+        <file>assets/images/dashboard (2).png</file>
+        <file>assets/images/settings.png</file>
+        <file>assets/images/courses.png</file>
+        <file>assets/images/user.png</file>
+        <file>assets/images/qualification.png</file>
+    </qresource>
+</RCC>
