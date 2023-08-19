@@ -9,5 +9,7 @@
         <file>assets/images/courses.png</file>
         <file>assets/images/user.png</file>
         <file>assets/images/qualification.png</file>
+        <file>assets/images/login.png</file>
+        <file>assets/images/signup.png</file>
     </qresource>
 </RCC>
