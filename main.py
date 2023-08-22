@@ -18,18 +18,27 @@ class MainApp(QMainWindow, ui):
         self.setStyleSheet(dark_stylesheet)
         self.Handle_Ui_Changes()
         self.Handle_Button()
+        self.lineEdit_username.returnPressed.connect(self.move_focus_to_next_line_edit)
+        self.lineEdit_password.returnPressed.connect(self.move_focus_to_next_line_edit)
+        self.lineEdit_user_name_2.returnPressed.connect(self.move_focus_to_next_line_edit)
+        self.lineEdit_first_name_2.returnPressed.connect(self.move_focus_to_next_line_edit)
+        self.lineEdit_last_name_2.returnPressed.connect(self.move_focus_to_next_line_edit)
+        self.lineEdit_email_2.returnPressed.connect(self.move_focus_to_next_line_edit)
+        self.lineEdit_password_2.returnPressed.connect(self.move_focus_to_next_line_edit)
+        self.lineEdit_confirm_password_2.returnPressed.connect(self.move_focus_to_next_line_edit)
         
         
-        
+
+            
         
     def Handle_Ui_Changes(self):
-        self.tabWidget_main.setCurrentIndex(3)
+        self.tabWidget_main.setCurrentIndex(4)
         self.tabWidget_main_app.setCurrentIndex(0)
         self.tabWidget_main.tabBar().setVisible(False)
         self.tabWidget_main_app.tabBar().setVisible(False)
         
     def Handle_Button(self):
-        self.pushButton_get_started.clicked.connect(partial(self.change_welcome_widget_index, 2))        
+        self.pushButton_get_started.clicked.connect(partial(self.change_welcome_widget_index, 1))        
         self.pushButton_dash_board.clicked.connect(partial(self.change_main_app_widget, 0))
         self.pushButton_courses.clicked.connect(partial(self.change_main_app_widget, 1))
         self.pushButton_grade.clicked.connect(partial(self.change_main_app_widget, 2))
@@ -37,6 +46,9 @@ class MainApp(QMainWindow, ui):
         self.pushButton_settings.clicked.connect(partial(self.change_main_app_widget, 4))
         self.pushButton_login.clicked.connect(self.login)
         self.pushButton_create_account_2.clicked.connect(self.create_account)
+        self.commandLinkButton_already_have_an_account.clicked.connect(partial(self.change_welcome_widget_index, 1))
+        self.commandLinkButton_create_account.clicked.connect(partial(self.change_welcome_widget_index, 2))
+        # self.pushB
         ...    
     
     # Change Main Widget 
@@ -68,11 +80,11 @@ class MainApp(QMainWindow, ui):
             last_name = fine_tuned_userdate[2]
             email = fine_tuned_userdate[5]
             self.show_message_box("Login Status", "Login Succesful",QMessageBox.information, QMessageBox.Ok)
-            self.tabWidget_main.setCurrentIndex(1)
+            self.tabWidget_main.setCurrentIndex(3)
             self.label_welcome.setText(f"Welcome Back, {first_name}")
             
         else: 
-            self.show_message_box("Login Status", "Invalid Username or Password",QMessageBox.information, QMessageBox.Ok)
+            QMessageBox.warning(self, 'Password Empty', 'Invalid Password or Username')
             self.lineEdit_username.setText("")   
             self.lineEdit_password.setText("")   
             
@@ -89,7 +101,7 @@ class MainApp(QMainWindow, ui):
         data = (first_name, last_name, username, password, email, college_name)
         
         for i in data:
-            if len(i) == 0:
+            if not(len(i)):
                 QMessageBox.warning(self, 'Details Error', 'Details incomplete.')
                 return
         
@@ -120,6 +132,22 @@ class MainApp(QMainWindow, ui):
             QMessageBox.critical(self, 'Error', f'An error occurred: {e}')
 
         self.conn.close()
+        
+        
+    def move_focus_to_next_line_edit(self):
+        current_line_edit = self.focusWidget()
+
+        # Find the next line edit using tab order
+        next_tab_order = self.focusNextChild()
+
+        if next_tab_order:
+            next_tab_order.setFocus(Qt.TabFocusReason)
+        else:
+            self.lineEdit_username.setFocus(Qt.TabFocusReason)  # Wrap around to the first line edit
+
+    
+    
+    
     def show_message_box(self, title, text, icon, buttons=QMessageBox.Ok | QMessageBox.Cancel):
         mg = QMessageBox()
         mg.setWindowTitle(title)

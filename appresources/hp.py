@@ -8,9 +8,5 @@ def encrypt_password(raw_password:str) -> str:
     
     return hex_data
 
-n = encrypt_password("Eden")
-
-with open("yo.txt", "w") as file:
-    file.write(n)
 
 
