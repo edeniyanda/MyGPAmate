@@ -26,6 +26,7 @@ class MainApp(QMainWindow, ui):
         self.lineEdit_email_2.returnPressed.connect(self.move_focus_to_next_line_edit)
         self.lineEdit_password_2.returnPressed.connect(self.move_focus_to_next_line_edit)
         self.lineEdit_confirm_password_2.returnPressed.connect(self.move_focus_to_next_line_edit)
+        self.counter = 0
         
         
 
@@ -36,6 +37,19 @@ class MainApp(QMainWindow, ui):
         self.tabWidget_main_app.setCurrentIndex(0)
         self.tabWidget_main.tabBar().setVisible(False)
         self.tabWidget_main_app.tabBar().setVisible(False)
+        for i in range(2):
+            if i == 0:
+                self.tableWidget_course_info.setColumnWidth(i, 500)
+                ...
+            elif i == 1:
+                self.tableWidget_course_info.setColumnWidth(i, 100)
+            elif i == 2:
+                self.tableWidget_course_info.setColumnWidth(i, 50)
+        self.tableWidget_course_info.insertRow(0)
+        self.load_course_info()
+            
+                
+            
         
     def Handle_Button(self):
         self.pushButton_get_started.clicked.connect(partial(self.change_welcome_widget_index, 1))        
@@ -48,6 +62,7 @@ class MainApp(QMainWindow, ui):
         self.pushButton_create_account_2.clicked.connect(self.create_account)
         self.commandLinkButton_already_have_an_account.clicked.connect(partial(self.change_welcome_widget_index, 1))
         self.commandLinkButton_create_account.clicked.connect(partial(self.change_welcome_widget_index, 2))
+        self.pushButton_add_new_courses.clicked.connect(self.add_courses)
         # self.pushB
         ...    
     
@@ -77,6 +92,7 @@ class MainApp(QMainWindow, ui):
             print(userdata)
             fine_tuned_userdate = list(userdata)
             first_name = fine_tuned_userdate[1]
+            self.id = fine_tuned_userdate[0]
             last_name = fine_tuned_userdate[2]
             email = fine_tuned_userdate[5]
             self.show_message_box("Login Status", "Login Succesful",QMessageBox.information, QMessageBox.Ok)
@@ -144,10 +160,54 @@ class MainApp(QMainWindow, ui):
             next_tab_order.setFocus(Qt.TabFocusReason)
         else:
             self.lineEdit_username.setFocus(Qt.TabFocusReason)  # Wrap around to the first line edit
+    # Add new courses
+    def add_courses(self):
+        self.counter += 1
+        course_title = self.lineEdit_course_title.text()
+        course_code = self.lineEdit_course_code.text()
+        course_unit = self.spinBox_course_unit.value()  # Use value() to get the integer value from spinBox
+        
+        course_info = {
+            course_code : [course_title, course_code, str(course_unit)]
+        }
 
+        row = self.tableWidget_course_info.rowCount()
+        print(row)
+        
+        if row > 15:
+            QMessageBox.critical(self, "Eror 404", "COurses Cannot Exceed !5")
+            return
+        else:
+            self.tableWidget_course_info.insertRow(row - 1)
+            
+        
+        for i in range(3):
+            self.tableWidget_course_info.setItem(row -1 , i, QTableWidgetItem(course_info[course_code][i]))
+
+        
     
-    
-    
+    def load_course_info(self):
+        self.conn = sqlite3.connect("mygpamatedata.db")
+        self.cur = self.conn.cursor()
+        
+        query = "SELECT * FROM course_info"
+        
+        self.cur.execute(query)
+        
+        data = self.cur.fetchall()
+        print(data)
+        
+        if data:
+            for i in range(len(data)):
+                fine_data = data[i]
+                new_fine_data = list(fine_data[1:])
+                for j in range(len(new_fine_data)):
+                    item = QTableWidgetItem(str(new_fine_data[j]))
+                    self.tableWidget_course_info.setItem(i, j, item)
+                row_position = self.tableWidget_course_info.rowCount()
+                self.tableWidget_course_info.insertRow(row_position)
+                
+                    
     def show_message_box(self, title, text, icon, buttons=QMessageBox.Ok | QMessageBox.Cancel):
         mg = QMessageBox()
         mg.setWindowTitle(title)
