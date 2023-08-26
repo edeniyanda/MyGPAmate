@@ -32,7 +32,7 @@ class MainApp(QMainWindow, ui):
             
         
     def Handle_Ui_Changes(self):
-        self.tabWidget_main.setCurrentIndex(4)
+        self.tabWidget_main.setCurrentIndex(0)
         self.tabWidget_main_app.setCurrentIndex(0)
         self.tabWidget_main.tabBar().setVisible(False)
         self.tabWidget_main_app.tabBar().setVisible(False)
@@ -88,7 +88,6 @@ class MainApp(QMainWindow, ui):
             
         userdata = self.cur.fetchone()
         if userdata:
-            print(userdata)
             fine_tuned_userdate = list(userdata)
             first_name = fine_tuned_userdate[1]
             self.id = fine_tuned_userdate[0]
