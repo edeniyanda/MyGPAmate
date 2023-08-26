@@ -26,7 +26,6 @@ class MainApp(QMainWindow, ui):
         self.lineEdit_email_2.returnPressed.connect(self.move_focus_to_next_line_edit)
         self.lineEdit_password_2.returnPressed.connect(self.move_focus_to_next_line_edit)
         self.lineEdit_confirm_password_2.returnPressed.connect(self.move_focus_to_next_line_edit)
-        self.counter = 0
         
         
 
@@ -63,7 +62,7 @@ class MainApp(QMainWindow, ui):
         self.commandLinkButton_already_have_an_account.clicked.connect(partial(self.change_welcome_widget_index, 1))
         self.commandLinkButton_create_account.clicked.connect(partial(self.change_welcome_widget_index, 2))
         self.pushButton_add_new_courses.clicked.connect(self.add_courses)
-        # self.pushB
+        self.pushButton_save_changes.clicked.connect(self.save_courses)
         ...    
     
     # Change Main Widget 
@@ -162,20 +161,44 @@ class MainApp(QMainWindow, ui):
             self.lineEdit_username.setFocus(Qt.TabFocusReason)  # Wrap around to the first line edit
     # Add new courses
     def add_courses(self):
-        self.counter += 1
         course_title = self.lineEdit_course_title.text()
         course_code = self.lineEdit_course_code.text()
-        course_unit = self.spinBox_course_unit.value()  # Use value() to get the integer value from spinBox
+        course_unit = self.spinBox_course_unit.value()  # Used value() to get the integer value from spinBox
         
         course_info = {
             course_code : [course_title, course_code, str(course_unit)]
         }
 
         row = self.tableWidget_course_info.rowCount()
-        print(row)
+        
+        dec = [self.lineEdit_course_title, self.lineEdit_course_code, self.spinBox_course_unit]
+        
+        main_info = course_info[course_code]
+        
+        for i in main_info:
+            try:
+                int(i)
+                QMessageBox.critical(self, "Invalid Input", f"{dec[main_info.index(i)].placeholderText()} Cannot be an Integer")
+                return 
+            except:
+                ...
+            if not i:
+                QMessageBox.critical(self, "Invalid Details", f"{dec[main_info.index(i)].placeholderText()} Cannot be Empty")
+                return
+            elif i == "0" and i == str(course_unit):
+                QMessageBox.critical(self, "Invalid Details", f"Course Unit Cannot be 0")
+                return
+            
+        
+        # if not (all([error for error in course_info[course_code]])):
+        #     QMessageBox.critical(self, "Invalid Details", f"Field(s) Cannot be Empty")
+        #     return
+        
+            
+            
         
         if row > 15:
-            QMessageBox.critical(self, "Eror 404", "COurses Cannot Exceed !5")
+            QMessageBox.critical(self, "Eror 404", "Courses Cannot Exceed !5")
             return
         else:
             self.tableWidget_course_info.insertRow(row - 1)
@@ -195,7 +218,6 @@ class MainApp(QMainWindow, ui):
         self.cur.execute(query)
         
         data = self.cur.fetchall()
-        print(data)
         
         if data:
             for i in range(len(data)):
@@ -206,8 +228,41 @@ class MainApp(QMainWindow, ui):
                     self.tableWidget_course_info.setItem(i, j, item)
                 row_position = self.tableWidget_course_info.rowCount()
                 self.tableWidget_course_info.insertRow(row_position)
-                
-                    
+    
+    def save_courses(self):
+        self.conn = sqlite3.connect("mygpamatedata.db")
+        self.cur = self.conn.cursor()
+        
+        num_row = self.tableWidget_course_info.rowCount()
+        num_col = self.tableWidget_course_info.columnCount()
+        
+        all_data = []
+        for row in range(num_row):
+            if row == num_row - 1:
+                break
+            course_data = []
+            for col in range(num_col):
+                item = self.tableWidget_course_info.item(row, col)
+                course_data.append(item.text())
+            all_data.append(tuple(course_data))
+        if len(all_data) == 0:
+            QMessageBox.critical(self, "Error", "Courses Cannot Be Empty")
+            return
+            
+        
+        self.cur.execute("DELETE FROM 'course_info'")
+        self.conn.commit()  
+           
+        for data in all_data:
+            query = "INSERT INTO 'course_info' (course_title, course_code, course_unit) VALUES (?,?,?)"
+            self.cur.execute(query, data)
+            self.conn.commit()
+                     
+        self.conn.close()
+        
+        self.show_message_box("MyGPAmate - Status", "Courses Added Succesfully", QMessageBox.information, QMessageBox.Ok)
+        
+        
     def show_message_box(self, title, text, icon, buttons=QMessageBox.Ok | QMessageBox.Cancel):
         mg = QMessageBox()
         mg.setWindowTitle(title)
