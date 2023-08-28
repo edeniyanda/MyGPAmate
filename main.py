@@ -8,6 +8,9 @@ import sqlite3
 from functools import partial
 from appresources import encrypt_password
 
+
+
+APP_NAME = "MyGPAmate"
 ui,_ = loadUiType("MyGPAmate.ui")
 
 class MainApp(QMainWindow, ui):
@@ -32,8 +35,13 @@ class MainApp(QMainWindow, ui):
             
         
     def Handle_Ui_Changes(self):
-        self.tabWidget_main.setCurrentIndex(0)
-        self.tabWidget_main_app.setCurrentIndex(0)
+        try:
+            self.load_current_user_info()
+            self.tabWidget_main.setCurrentIndex(3)
+            self.tabWidget_main_app.setCurrentIndex(0)
+            self.label_welcome.setText(f"Welcome Back, {self.current_user_info[1]}")
+        except:  
+            self.tabWidget_main.setCurrentIndex(0)
         self.tabWidget_main.tabBar().setVisible(False)
         self.tabWidget_main_app.tabBar().setVisible(False)
         for i in range(2):
@@ -46,8 +54,18 @@ class MainApp(QMainWindow, ui):
                 self.tableWidget_course_info.setColumnWidth(i, 50)
         self.tableWidget_course_info.insertRow(0)
         self.load_course_info()
+        # self.comboBox_faculty.currentTextChanged.connect(self.faculty_changed)
             
-                
+    # def faculty_changed(self, faculty):
+    #     self.comboBox_department.clear()
+
+    #     if faculty == "Faculty of Natural and Applied Science":
+    #         self.department_combo.addItems(["Applied Physics", "Computer Science", "Chemistry"])
+    #         self.course_combo.addItems(["Physics 101", "Intro to Programming", "Chemistry Basics"])
+    #     elif faculty == "Faculty of Social Sciences":
+    #         self.department_combo.addItems(["Psychology", "Economics", "Sociology"])
+    #         self.course_combo.addItems(["Psych 101", "Microeconomics", "Introduction to Sociology"])
+      
             
         
     def Handle_Button(self):
@@ -63,8 +81,26 @@ class MainApp(QMainWindow, ui):
         self.commandLinkButton_create_account.clicked.connect(partial(self.change_welcome_widget_index, 2))
         self.pushButton_add_new_courses.clicked.connect(self.add_courses)
         self.pushButton_save_changes.clicked.connect(self.save_courses)
+        self.pushButton_log_out.clicked.connect(self.log_out)
         ...    
-    
+    # Log out function
+    def log_out(self):
+        mg = QMessageBox()
+        mg.setWindowTitle(f"{APP_NAME} - Log Out?")
+        mg.setText("Are you sure you want to Log out?")
+        mg.setIcon(QMessageBox.Question)
+        mg.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+
+        result = mg.exec_()
+
+        if result == QMessageBox.Yes:
+            # Go back to welcome Screen
+            self.tabWidget_main.setCurrentIndex(0)
+        elif result == QMessageBox.No:
+            # Do nothing
+            ...
+            
+            
     # Change Main Widget 
     def change_welcome_widget_index(self, index_position:int):
         self.tabWidget_main.setCurrentIndex(index_position)
@@ -88,20 +124,67 @@ class MainApp(QMainWindow, ui):
             
         userdata = self.cur.fetchone()
         if userdata:
-            fine_tuned_userdate = list(userdata)
-            first_name = fine_tuned_userdate[1]
-            self.id = fine_tuned_userdate[0]
-            last_name = fine_tuned_userdate[2]
-            email = fine_tuned_userdate[5]
+            fine_tuned_userdata = list(userdata)
+            print(fine_tuned_userdata)
+            first_name = fine_tuned_userdata[1]
+            self.id = fine_tuned_userdata[0]
+            last_name = fine_tuned_userdata[2]
+            email = fine_tuned_userdata[5]
             self.show_message_box("Login Status", "Login Succesful",QMessageBox.information, QMessageBox.Ok)
             self.tabWidget_main.setCurrentIndex(3)
-            self.label_welcome.setText(f"Welcome Back, {first_name}")
-            
+            self.tabWidget_main_app.setCurrentIndex(0)
+            self.create_current_user(fine_tuned_userdata)
+            self.load_current_user_info()
+            self.label_welcome.setText(f"Welcome Back, {self.current_user_info[1]}")   
         else: 
             QMessageBox.warning(self, 'Password Empty', 'Invalid Password or Username')
             self.lineEdit_username.setText("")   
             self.lineEdit_password.setText("")   
             
+    # Create a current User
+    def create_current_user(self, data):
+        data = tuple(data[1:])
+        print(data)
+        self.conn = sqlite3.connect("mygpamatedata.db")
+        self.cur = self.conn.cursor()
+        
+        query = '''CREATE TABLE IF NOT EXISTS "currentuser" (
+                        "user_id"	INTEGER NOT NULL,
+                        "first_name"	TEXT NOT NULL,
+                        "last_name"	TEXT NOT NULL,
+                        "username"	INTEGER NOT NULL,
+                        "password"	TEXT NOT NULL,
+                        "email"	TEXT NOT NULL,
+                        "college_name"	TEXT NOT NULL,
+                        PRIMARY KEY("user_id" AUTOINCREMENT)
+                    );'''
+        
+        self.cur.execute(query)
+        self.conn.commit()
+        
+        self.cur.execute("INSERT INTO currentuser (first_name, last_name, username, password, email, college_name) VALUES (?,?,?,?,?,?)", data)
+        
+        self.conn.commit()
+        
+        self.conn.close()
+        
+    # Load Current User Information
+    def load_current_user_info(self):
+        self.conn = sqlite3.connect("mygpamatedata.db")
+        self.cur = self.conn.cursor()
+        
+        query = "SELECT * FROM currentuser"
+        
+        self.cur.execute(query)
+        
+        self.current_user_info = self.cur.fetchone()
+        
+        self.conn.commit()
+        self.conn.close()
+        
+        
+        
+        
         
     def create_account(self):
         username = self.lineEdit_user_name_2.text()
