@@ -20,7 +20,7 @@
       <x>0</x>
       <y>0</y>
       <width>1161</width>
-      <height>571</height>
+      <height>591</height>
      </rect>
     </property>
     <property name="font">
@@ -32,7 +32,7 @@
      </font>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>3</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -1012,7 +1012,7 @@
        <widget class="QPushButton" name="pushButton_log_out">
         <property name="geometry">
          <rect>
-          <x>500</x>
+          <x>50</x>
           <y>350</y>
           <width>121</width>
           <height>101</height>
@@ -1021,6 +1021,71 @@
         <property name="text">
          <string>Log Out</string>
         </property>
+       </widget>
+       <widget class="QGroupBox" name="groupBox_themes">
+        <property name="geometry">
+         <rect>
+          <x>650</x>
+          <y>40</y>
+          <width>421</width>
+          <height>461</height>
+         </rect>
+        </property>
+        <property name="title">
+         <string>Themes</string>
+        </property>
+        <widget class="QPushButton" name="pushButton_dark_theme">
+         <property name="geometry">
+          <rect>
+           <x>40</x>
+           <y>190</y>
+           <width>121</width>
+           <height>101</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Dark Theme</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="pushButton_light_theme">
+         <property name="geometry">
+          <rect>
+           <x>250</x>
+           <y>190</y>
+           <width>121</width>
+           <height>101</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Light Theme</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="pushButton_log_out_4">
+         <property name="geometry">
+          <rect>
+           <x>250</x>
+           <y>310</y>
+           <width>121</width>
+           <height>101</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Theme</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="pushButton_log_out_5">
+         <property name="geometry">
+          <rect>
+           <x>40</x>
+           <y>310</y>
+           <width>121</width>
+           <height>101</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Theme</string>
+         </property>
+        </widget>
        </widget>
       </widget>
      </widget>

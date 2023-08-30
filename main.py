@@ -17,8 +17,6 @@ class MainApp(QMainWindow, ui):
     def __init__(self):
         QMainWindow.__init__(self)
         self.setupUi(self)
-        dark_stylesheet = qdarkstyle.load_stylesheet_pyqt5()
-        self.setStyleSheet(dark_stylesheet)
         self.Handle_Ui_Changes()
         self.Handle_Button()
         self.lineEdit_username.returnPressed.connect(self.move_focus_to_next_line_edit)
@@ -54,6 +52,8 @@ class MainApp(QMainWindow, ui):
                 self.tableWidget_course_info.setColumnWidth(i, 50)
         self.tableWidget_course_info.insertRow(0)
         self.load_course_info()
+        self.settings_data = self.load_settings()
+        self.exectue_settings(self.settings_data)
         # self.comboBox_faculty.currentTextChanged.connect(self.faculty_changed)
             
     # def faculty_changed(self, faculty):
@@ -82,7 +82,7 @@ class MainApp(QMainWindow, ui):
         self.pushButton_add_new_courses.clicked.connect(self.add_courses)
         self.pushButton_save_changes.clicked.connect(self.save_courses)
         self.pushButton_log_out.clicked.connect(self.log_out)
-        ...    
+        
     # Log out function
     def log_out(self):
         mg = QMessageBox()
@@ -96,10 +96,52 @@ class MainApp(QMainWindow, ui):
         if result == QMessageBox.Yes:
             # Go back to welcome Screen
             self.tabWidget_main.setCurrentIndex(0)
+            
+            # Delete current user table
+            self.conn = sqlite3.connect("mygpamatedata.db")
+            self.cur = self.conn.cursor()
+            
+            query = "DELETE FROM currentuser"
+            
+            self.cur.execute(query)
+            self.conn.commit()
+            self.conn.close()
         elif result == QMessageBox.No:
             # Do nothing
             ...
             
+    # Load settings from database
+    def load_settings(self):
+        self.conn = sqlite3.connect('mygpamatedata.db')
+        self.cursor = self.conn.cursor()
+
+        # Retrieve settings from the database
+        select_query = "SELECT theme, font_size, font_type FROM app_settings WHERE id = ?"
+        row_id = 1  # The ID of the row you want to retrieve
+        self.cursor.execute(select_query, (row_id,))
+        settings_row = self.cursor.fetchone()  # Fetch a single row
+        
+        self.conn.close()
+
+        if settings_row:
+            theme, font_size, font_type = settings_row
+            return {
+                'theme': theme,
+                'font_size': font_size,
+                'font_type': font_type
+            }
+        else:
+            return None  # Return None if the row is not found
+
+    # Execute settings
+    def exectue_settings(self, data):
+        if data["theme"] == "dark":
+            dark_stylesheet = qdarkstyle.load_stylesheet_pyqt5()
+            self.setStyleSheet(dark_stylesheet)
+        else:
+            ...
+            
+        
             
     # Change Main Widget 
     def change_welcome_widget_index(self, index_position:int):
@@ -125,7 +167,6 @@ class MainApp(QMainWindow, ui):
         userdata = self.cur.fetchone()
         if userdata:
             fine_tuned_userdata = list(userdata)
-            print(fine_tuned_userdata)
             first_name = fine_tuned_userdata[1]
             self.id = fine_tuned_userdata[0]
             last_name = fine_tuned_userdata[2]
@@ -144,7 +185,6 @@ class MainApp(QMainWindow, ui):
     # Create a current User
     def create_current_user(self, data):
         data = tuple(data[1:])
-        print(data)
         self.conn = sqlite3.connect("mygpamatedata.db")
         self.cur = self.conn.cursor()
         
