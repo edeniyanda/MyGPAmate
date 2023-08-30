@@ -550,7 +550,7 @@
        </font>
       </property>
       <property name="currentIndex">
-       <number>4</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab_4">
        <attribute name="title">
@@ -731,7 +731,7 @@
          </property>
         </column>
        </widget>
-       <widget class="QComboBox" name="comboBox">
+       <widget class="QComboBox" name="comboBox_level">
         <property name="geometry">
          <rect>
           <x>90</x>
@@ -742,7 +742,7 @@
         </property>
         <item>
          <property name="text">
-          <string>!00 Level</string>
+          <string>100 Level</string>
          </property>
         </item>
         <item>
@@ -787,7 +787,7 @@
          <string>Semester</string>
         </property>
        </widget>
-       <widget class="QComboBox" name="comboBox_2">
+       <widget class="QComboBox" name="comboBox_semester">
         <property name="geometry">
          <rect>
           <x>430</x>
@@ -804,16 +804,6 @@
         <item>
          <property name="text">
           <string>Second Semester</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>300 Level</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>400 Level</string>
          </property>
         </item>
        </widget>

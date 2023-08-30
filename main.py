@@ -54,6 +54,7 @@ class MainApp(QMainWindow, ui):
         self.load_course_info()
         self.settings_data = self.load_settings()
         self.exectue_settings(self.settings_data)
+        self.handle_combox_changes()
         # self.comboBox_faculty.currentTextChanged.connect(self.faculty_changed)
             
     # def faculty_changed(self, faculty):
@@ -402,7 +403,13 @@ class MainApp(QMainWindow, ui):
         self.conn.close()
         
         self.show_message_box("MyGPAmate - Status", "Courses Added Succesfully", QMessageBox.information, QMessageBox.Ok)
+    
+    
+    def handle_combox_changes(self):
+        self.comboBox_level.currentTextChanged.connect(self.update_course_table)
         
+    def update_course_table(self):
+        print("Hello")   
         
     def show_message_box(self, title, text, icon, buttons=QMessageBox.Ok | QMessageBox.Cancel):
         mg = QMessageBox()
