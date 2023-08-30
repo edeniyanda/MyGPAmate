@@ -82,6 +82,8 @@ class MainApp(QMainWindow, ui):
         self.pushButton_add_new_courses.clicked.connect(self.add_courses)
         self.pushButton_save_changes.clicked.connect(self.save_courses)
         self.pushButton_log_out.clicked.connect(self.log_out)
+        self.pushButton_dark_theme.clicked.connect(partial(self.change_theme, "dark"))
+        self.pushButton_light_theme.clicked.connect(partial(self.change_theme, "light"))
         
     # Log out function
     def log_out(self):
@@ -117,7 +119,7 @@ class MainApp(QMainWindow, ui):
 
         # Retrieve settings from the database
         select_query = "SELECT theme, font_size, font_type FROM app_settings WHERE id = ?"
-        row_id = 1  # The ID of the row you want to retrieve
+        row_id = 1  # The ID of the row
         self.cursor.execute(select_query, (row_id,))
         settings_row = self.cursor.fetchone()  # Fetch a single row
         
@@ -139,8 +141,25 @@ class MainApp(QMainWindow, ui):
             dark_stylesheet = qdarkstyle.load_stylesheet_pyqt5()
             self.setStyleSheet(dark_stylesheet)
         else:
-            ...
-            
+            self.setStyleSheet("")
+    # Change theme function 
+    def change_theme(self, theme:str):
+        self.conn = sqlite3.connect('mygpamatedata.db')
+        self.cursor = self.conn.cursor()
+
+        # Retrieve settings from the database
+        select_query = "UPDATE app_settings SET theme=? WHERE id = ?"
+        row_id = 1  # The ID of the row 
+        self.cursor.execute(select_query, (theme, row_id))
+        self.conn.commit()  # Fetch a single row
+        
+        self.conn.close()
+        
+        self.load_course_info()
+        self.settings_data = self.load_settings()
+        self.exectue_settings(self.settings_data)
+
+               
         
             
     # Change Main Widget 
