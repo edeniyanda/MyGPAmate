@@ -1,7 +1,7 @@
 import sqlite3
 
 class update_table:
-    def __init__(self, path_to_database:str, table_name:str, level:str, semester:str) -> None:
+    def __init__(self, path_to_database:str, table_name:str, level:str = None, semester:str = None) -> None:
         self.level = level
         self.semester = semester
         self.path_to_database = path_to_database
@@ -32,3 +32,6 @@ class update_table:
             self.conn.commit()
                      
         self.conn.close()
+        
+        
+        

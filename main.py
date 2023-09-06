@@ -6,7 +6,7 @@ import qdarkstyle
 import sys
 import sqlite3
 from functools import partial
-from appresources import encrypt_password, update_table
+from appresources import encrypt_password, update_table, settings
 
 
 
@@ -19,10 +19,31 @@ class MainApp(QMainWindow, ui):
         self.setupUi(self)
         # self.current_semester = "First Semester"
         # self.current_level = "!00 Level"
+        self.settings_data = self.load_settings()
         self.Handle_Ui_Changes()
+        self.exectue_settings(self.settings_data)
         self.Handle_Button()
 
+    
+    def closeEvent(self, event):
+        reply = QMessageBox.question(
+            self,
+            'Confirm Exit',
+            'Are you sure you want to exit?',
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No
+        )
 
+        if reply == QMessageBox.Yes:
+            event.accept()  # Close the application
+            self.save_changes()
+        else:
+            event.ignore()  # Ignore the close event
+    
+    def save_changes(self):
+        data = (1, "dark", "12", "test", self.comboBox_level.currentText(), self.comboBox_semester.currentText())
+        save_data = settings("mygpamatedata.db")
+        save_data.save_settings(data)
         
     def Handle_Ui_Changes(self):
         try:
@@ -43,9 +64,7 @@ class MainApp(QMainWindow, ui):
             elif i == 2:
                 self.tableWidget_course_info.setColumnWidth(i, 50)
         self.tableWidget_course_info.insertRow(0)
-        self.settings_data = self.load_settings()
         self.load_timeline_info()
-        self.exectue_settings(self.settings_data)
         self.load_course_info()
         self.handle_combox_changes()
             
@@ -97,44 +116,46 @@ class MainApp(QMainWindow, ui):
             
     # Load settings from database
     def load_settings(self):
-        self.conn = sqlite3.connect('mygpamatedata.db')
-        self.cursor = self.conn.cursor()
-
-        # Retrieve settings from the database
-        select_query = "SELECT * FROM app_settings WHERE id = ?"
-        row_id = 1  # The ID of the row
-        self.cursor.execute(select_query, (row_id,))
-        self.settings_row = self.cursor.fetchone()  # Fetch a single row
-        
-
-        
-        self.conn.close()
+        info = settings("mygpamatedata.db")
+        self.settings_row = info.load_data()
+        print(self.settings_row)
 
         if self.settings_row:
             id, theme, font_size, font_type, current_level, current_semester = self.settings_row
-            return {
+            mn = {
                 'theme': theme,
                 'font_size': font_size,
                 'font_type': font_type, 
                 "current_level": current_level,
                 "current_semester": current_semester
             }
+            print(mn)
+            return mn
             
         else:
             return None  # Return None if the row is not found
     def load_timeline_info(self):
-        self.current_level = self.settings_data["current_level"]
-        self.current_semester = self.settings_data["current_semester"]
+        self.comboBox_level.setCurrentText(self.settings_data["current_level"])
+        self.comboBox_semester.setCurrentText(self.settings_data["current_semester"])
+        self.refresh_table()
+        
 
 
 
     # Execute settings
     def exectue_settings(self, data):
+        # Get the current font size before changing the theme
+        current_font = self.font()
+
         if data["theme"] == "dark":
             dark_stylesheet = qdarkstyle.load_stylesheet_pyqt5()
             self.setStyleSheet(dark_stylesheet)
         else:
+            # If the theme is not "dark," set an empty stylesheet to reset the theme.
             self.setStyleSheet("")
+
+        # Set the font size back to the original value
+        self.setFont(current_font)
         n = self.current_level.split()[0]
         m = self.current_semester.split()[0]
         
