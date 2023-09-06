@@ -122,15 +122,13 @@ class MainApp(QMainWindow, ui):
 
         if self.settings_row:
             id, theme, font_size, font_type, current_level, current_semester = self.settings_row
-            mn = {
+            return {
                 'theme': theme,
                 'font_size': font_size,
                 'font_type': font_type, 
                 "current_level": current_level,
                 "current_semester": current_semester
             }
-            print(mn)
-            return mn
             
         else:
             return None  # Return None if the row is not found
