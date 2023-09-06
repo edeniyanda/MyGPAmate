@@ -651,7 +651,7 @@
        <widget class="QSpinBox" name="spinBox_course_unit">
         <property name="geometry">
          <rect>
-          <x>580</x>
+          <x>600</x>
           <y>70</y>
           <width>51</width>
           <height>31</height>
@@ -692,7 +692,7 @@
          <rect>
           <x>490</x>
           <y>70</y>
-          <width>81</width>
+          <width>101</width>
           <height>31</height>
          </rect>
         </property>

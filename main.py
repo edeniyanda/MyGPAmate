@@ -6,7 +6,7 @@ import qdarkstyle
 import sys
 import sqlite3
 from functools import partial
-from appresources import encrypt_password
+from appresources import encrypt_password, update_table
 
 
 
@@ -17,20 +17,12 @@ class MainApp(QMainWindow, ui):
     def __init__(self):
         QMainWindow.__init__(self)
         self.setupUi(self)
+        # self.current_semester = "First Semester"
+        # self.current_level = "!00 Level"
         self.Handle_Ui_Changes()
         self.Handle_Button()
-        self.lineEdit_username.returnPressed.connect(self.move_focus_to_next_line_edit)
-        self.lineEdit_password.returnPressed.connect(self.move_focus_to_next_line_edit)
-        self.lineEdit_user_name_2.returnPressed.connect(self.move_focus_to_next_line_edit)
-        self.lineEdit_first_name_2.returnPressed.connect(self.move_focus_to_next_line_edit)
-        self.lineEdit_last_name_2.returnPressed.connect(self.move_focus_to_next_line_edit)
-        self.lineEdit_email_2.returnPressed.connect(self.move_focus_to_next_line_edit)
-        self.lineEdit_password_2.returnPressed.connect(self.move_focus_to_next_line_edit)
-        self.lineEdit_confirm_password_2.returnPressed.connect(self.move_focus_to_next_line_edit)
-        
-        
 
-            
+
         
     def Handle_Ui_Changes(self):
         try:
@@ -51,23 +43,13 @@ class MainApp(QMainWindow, ui):
             elif i == 2:
                 self.tableWidget_course_info.setColumnWidth(i, 50)
         self.tableWidget_course_info.insertRow(0)
-        self.load_course_info()
         self.settings_data = self.load_settings()
+        self.load_timeline_info()
         self.exectue_settings(self.settings_data)
+        self.load_course_info()
         self.handle_combox_changes()
-        # self.comboBox_faculty.currentTextChanged.connect(self.faculty_changed)
             
-    # def faculty_changed(self, faculty):
-    #     self.comboBox_department.clear()
-
-    #     if faculty == "Faculty of Natural and Applied Science":
-    #         self.department_combo.addItems(["Applied Physics", "Computer Science", "Chemistry"])
-    #         self.course_combo.addItems(["Physics 101", "Intro to Programming", "Chemistry Basics"])
-    #     elif faculty == "Faculty of Social Sciences":
-    #         self.department_combo.addItems(["Psychology", "Economics", "Sociology"])
-    #         self.course_combo.addItems(["Psych 101", "Microeconomics", "Introduction to Sociology"])
-      
-            
+  
         
     def Handle_Button(self):
         self.pushButton_get_started.clicked.connect(partial(self.change_welcome_widget_index, 1))        
@@ -119,22 +101,32 @@ class MainApp(QMainWindow, ui):
         self.cursor = self.conn.cursor()
 
         # Retrieve settings from the database
-        select_query = "SELECT theme, font_size, font_type FROM app_settings WHERE id = ?"
+        select_query = "SELECT * FROM app_settings WHERE id = ?"
         row_id = 1  # The ID of the row
         self.cursor.execute(select_query, (row_id,))
-        settings_row = self.cursor.fetchone()  # Fetch a single row
+        self.settings_row = self.cursor.fetchone()  # Fetch a single row
+        
+
         
         self.conn.close()
 
-        if settings_row:
-            theme, font_size, font_type = settings_row
+        if self.settings_row:
+            id, theme, font_size, font_type, current_level, current_semester = self.settings_row
             return {
                 'theme': theme,
                 'font_size': font_size,
-                'font_type': font_type
+                'font_type': font_type, 
+                "current_level": current_level,
+                "current_semester": current_semester
             }
+            
         else:
             return None  # Return None if the row is not found
+    def load_timeline_info(self):
+        self.current_level = self.settings_data["current_level"]
+        self.current_semester = self.settings_data["current_semester"]
+
+
 
     # Execute settings
     def exectue_settings(self, data):
@@ -143,6 +135,11 @@ class MainApp(QMainWindow, ui):
             self.setStyleSheet(dark_stylesheet)
         else:
             self.setStyleSheet("")
+        n = self.current_level.split()[0]
+        m = self.current_semester.split()[0]
+        
+        
+        self.current_course_table =  f"{n}{m}Semester"
     # Change theme function 
     def change_theme(self, theme:str):
         self.conn = sqlite3.connect('mygpamatedata.db')
@@ -156,12 +153,9 @@ class MainApp(QMainWindow, ui):
         
         self.conn.close()
         
-        self.load_course_info()
+        # self.load_course_info()
         self.settings_data = self.load_settings()
         self.exectue_settings(self.settings_data)
-
-               
-        
             
     # Change Main Widget 
     def change_welcome_widget_index(self, index_position:int):
@@ -241,10 +235,7 @@ class MainApp(QMainWindow, ui):
         
         self.conn.commit()
         self.conn.close()
-        
-        
-        
-        
+
         
     def create_account(self):
         username = self.lineEdit_user_name_2.text()
@@ -289,18 +280,7 @@ class MainApp(QMainWindow, ui):
             QMessageBox.critical(self, 'Error', f'An error occurred: {e}')
 
         self.conn.close()
-        
-        
-    def move_focus_to_next_line_edit(self):
-        current_line_edit = self.focusWidget()
 
-        # Find the next line edit using tab order
-        next_tab_order = self.focusNextChild()
-
-        if next_tab_order:
-            next_tab_order.setFocus(Qt.TabFocusReason)
-        else:
-            self.lineEdit_username.setFocus(Qt.TabFocusReason)  # Wrap around to the first line edit
     # Add new courses
     def add_courses(self):
         course_title = self.lineEdit_course_title.text()
@@ -329,16 +309,11 @@ class MainApp(QMainWindow, ui):
                 return
             elif i == "0" and i == str(course_unit):
                 QMessageBox.critical(self, "Invalid Details", f"Course Unit Cannot be 0")
-                return
-            
-        
+                return    
         # if not (all([error for error in course_info[course_code]])):
         #     QMessageBox.critical(self, "Invalid Details", f"Field(s) Cannot be Empty")
         #     return
-        
-            
-            
-        
+
         if row > 15:
             QMessageBox.critical(self, "Eror 404", "Courses Cannot Exceed !5")
             return
@@ -350,16 +325,11 @@ class MainApp(QMainWindow, ui):
             self.tableWidget_course_info.setItem(row -1 , i, QTableWidgetItem(course_info[course_code][i]))
 
         
-    
     def load_course_info(self):
-        self.conn = sqlite3.connect("mygpamatedata.db")
-        self.cur = self.conn.cursor()
+        data_handle = update_table("mygpamatedata.db", self.current_course_table, self.current_level, self.current_semester)
+        data =  data_handle.load_course_from_database() 
         
-        query = "SELECT * FROM course_info"
-        
-        self.cur.execute(query)
-        
-        data = self.cur.fetchall()
+        self.tableWidget_course_info.setRowCount(1)
         
         if data:
             for i in range(len(data)):
@@ -372,9 +342,6 @@ class MainApp(QMainWindow, ui):
                 self.tableWidget_course_info.insertRow(row_position)
     
     def save_courses(self):
-        self.conn = sqlite3.connect("mygpamatedata.db")
-        self.cur = self.conn.cursor()
-        
         num_row = self.tableWidget_course_info.rowCount()
         num_col = self.tableWidget_course_info.columnCount()
         
@@ -390,26 +357,30 @@ class MainApp(QMainWindow, ui):
         if len(all_data) == 0:
             QMessageBox.critical(self, "Error", "Courses Cannot Be Empty")
             return
-            
         
-        self.cur.execute("DELETE FROM 'course_info'")
-        self.conn.commit()  
-           
-        for data in all_data:
-            query = "INSERT INTO 'course_info' (course_title, course_code, course_unit) VALUES (?,?,?)"
-            self.cur.execute(query, data)
-            self.conn.commit()
-                     
-        self.conn.close()
+        data_handle = update_table("mygpamatedata.db", self.current_course_table, "100", self.current_semester) 
+        data_handle.save_courses_to_database(all_data)
         
+        # Show Success message 
         self.show_message_box("MyGPAmate - Status", "Courses Added Succesfully", QMessageBox.information, QMessageBox.Ok)
     
     
     def handle_combox_changes(self):
-        self.comboBox_level.currentTextChanged.connect(self.update_course_table)
+        self.comboBox_level.currentTextChanged.connect(self.refresh_table)
+        self.comboBox_semester.currentTextChanged.connect(self.refresh_table)
         
-    def update_course_table(self):
-        print("Hello")   
+    def refresh_table(self):
+        self.current_level = self.comboBox_level.currentText()
+        self.current_semester = self.comboBox_semester.currentText()
+        
+        n = self.current_level.split()[0]
+        m = self.current_semester.split()[0]
+        
+        
+        self.current_course_table =  f"{n}{m}Semester"
+        
+        self.load_course_info()
+       
         
     def show_message_box(self, title, text, icon, buttons=QMessageBox.Ok | QMessageBox.Cancel):
         mg = QMessageBox()
@@ -427,5 +398,4 @@ def main():
     
     
 if __name__ == "__main__":
-    main()
-       
+    main()      
