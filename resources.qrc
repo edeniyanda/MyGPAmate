@@ -11,5 +11,12 @@
         <file>assets/images/qualification.png</file>
         <file>assets/images/login.png</file>
         <file>assets/images/signup.png</file>
+        <file>assets/images/web.png</file>
+        <file>assets/images/best.png</file>
+        <file>assets/images/programmer.png</file>
+        <file>assets/images/gear.png</file>
+        <file>assets/images/cours.png</file>
+        <file>assets/images/si.png</file>
+        <file>assets/images/su.png</file>
     </qresource>
 </RCC>

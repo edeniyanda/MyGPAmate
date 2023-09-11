@@ -50,7 +50,7 @@ class MainApp(QMainWindow, ui):
             self.load_current_user_info()
             self.tabWidget_main.setCurrentIndex(3)
             self.tabWidget_main_app.setCurrentIndex(0)
-            self.label_welcome.setText(f"Welcome Back, {self.current_user_info[1]}")
+            self.label_welcome.setText(f"{self.current_user_info[1]}")
         except:  
             self.tabWidget_main.setCurrentIndex(0)
         self.tabWidget_main.tabBar().setVisible(False)
@@ -118,7 +118,6 @@ class MainApp(QMainWindow, ui):
     def load_settings(self):
         info = settings("mygpamatedata.db")
         self.settings_row = info.load_data()
-        print(self.settings_row)
 
         if self.settings_row:
             id, theme, font_size, font_type, current_level, current_semester = self.settings_row

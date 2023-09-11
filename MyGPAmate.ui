@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>MyGPAmate</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QTabWidget" name="tabWidget_main">
@@ -32,7 +32,7 @@
      </font>
     </property>
     <property name="currentIndex">
-     <number>3</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -177,8 +177,8 @@
       <widget class="QLabel" name="label_26">
        <property name="geometry">
         <rect>
-         <x>200</x>
-         <y>70</y>
+         <x>110</x>
+         <y>30</y>
          <width>301</width>
          <height>41</height>
         </rect>
@@ -217,7 +217,7 @@
       <widget class="QCommandLinkButton" name="commandLinkButton_create_account">
        <property name="geometry">
         <rect>
-         <x>250</x>
+         <x>260</x>
          <y>340</y>
          <width>171</width>
          <height>41</height>
@@ -225,6 +225,25 @@
        </property>
        <property name="text">
         <string>Create Account</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_19">
+       <property name="geometry">
+        <rect>
+         <x>210</x>
+         <y>80</y>
+         <width>91</width>
+         <height>91</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap resource="resources.qrc">:/assets/images/si.png</pixmap>
+       </property>
+       <property name="scaledContents">
+        <bool>true</bool>
        </property>
       </widget>
      </widget>
@@ -580,18 +599,63 @@
          <set>Qt::AlignCenter</set>
         </property>
        </widget>
-       <widget class="QLabel" name="label_welcome">
+       <widget class="QFrame" name="frame">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>140</y>
+          <width>371</width>
+          <height>311</height>
+         </rect>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::StyledPanel</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Sunken</enum>
+        </property>
+       </widget>
+       <widget class="QWidget" name="layoutWidget">
         <property name="geometry">
          <rect>
           <x>10</x>
-          <y>40</y>
-          <width>291</width>
-          <height>31</height>
+          <y>30</y>
+          <width>161</width>
+          <height>41</height>
          </rect>
         </property>
-        <property name="text">
-         <string>Welcome Back, </string>
-        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <widget class="QLabel" name="label_18">
+           <property name="font">
+            <font>
+             <family>Segoe UI Black</family>
+             <pointsize>16</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string> Hi  👋,</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_welcome">
+           <property name="font">
+            <font>
+             <family>Segoe UI Black</family>
+             <pointsize>16</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>{name}</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </widget>
       </widget>
       <widget class="QWidget" name="tab_5">
@@ -1096,7 +1160,7 @@
       </property>
       <property name="icon">
        <iconset resource="resources.qrc">
-        <normaloff>:/assets/images/dashboard (2).png</normaloff>:/assets/images/dashboard (2).png</iconset>
+        <normaloff>:/assets/images/dashb.png</normaloff>:/assets/images/dashb.png</iconset>
       </property>
       <property name="iconSize">
        <size>
@@ -1122,7 +1186,7 @@
       </property>
       <property name="icon">
        <iconset resource="resources.qrc">
-        <normaloff>:/assets/images/courses.png</normaloff>:/assets/images/courses.png</iconset>
+        <normaloff>:/assets/images/cours.png</normaloff>:/assets/images/cours.png</iconset>
       </property>
       <property name="iconSize">
        <size>
@@ -1148,7 +1212,7 @@
       </property>
       <property name="icon">
        <iconset resource="resources.qrc">
-        <normaloff>:/assets/images/qualification.png</normaloff>:/assets/images/qualification.png</iconset>
+        <normaloff>:/assets/images/best.png</normaloff>:/assets/images/best.png</iconset>
       </property>
       <property name="iconSize">
        <size>
@@ -1174,7 +1238,7 @@
       </property>
       <property name="icon">
        <iconset resource="resources.qrc">
-        <normaloff>:/assets/images/user.png</normaloff>:/assets/images/user.png</iconset>
+        <normaloff>:/assets/images/programmer.png</normaloff>:/assets/images/programmer.png</iconset>
       </property>
       <property name="iconSize">
        <size>
@@ -1200,7 +1264,7 @@
       </property>
       <property name="icon">
        <iconset resource="resources.qrc">
-        <normaloff>:/assets/images/settings.png</normaloff>:/assets/images/settings.png</iconset>
+        <normaloff>:/assets/images/gear.png</normaloff>:/assets/images/gear.png</iconset>
       </property>
       <property name="iconSize">
        <size>
