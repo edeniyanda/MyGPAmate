@@ -18,5 +18,6 @@
         <file>assets/images/cours.png</file>
         <file>assets/images/si.png</file>
         <file>assets/images/su.png</file>
+        <file>assets/images/turn-off.png</file>
     </qresource>
 </RCC>

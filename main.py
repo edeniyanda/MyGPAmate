@@ -6,7 +6,7 @@ import qdarkstyle
 import sys
 import sqlite3
 from functools import partial
-from appresources import encrypt_password, update_table, settings
+from appresources import encrypt_password, update_table, settings, load_data_from_db
 
 
 
@@ -23,6 +23,7 @@ class MainApp(QMainWindow, ui):
         self.Handle_Ui_Changes()
         self.exectue_settings(self.settings_data)
         self.Handle_Button()
+        self.load_profile()
 
     
     def closeEvent(self, event):
@@ -44,7 +45,18 @@ class MainApp(QMainWindow, ui):
         data = (1, "dark", "12", "test", self.comboBox_level.currentText(), self.comboBox_semester.currentText())
         save_data = settings("mygpamatedata.db")
         save_data.save_settings(data)
+    
+    def load_profile(self):
+        profile = load_data_from_db("mygpamatedata.db", "users")
+        profile_data = profile.load_data()
         
+        self.lineEdit_set_username.setText(profile_data[3])
+        self.lineEdit_set_firstname.setText(profile_data[1])
+        self.lineEdit_set_lastname.setText(profile_data[2])
+        self.lineEdit_set_email.setText(profile_data[5])
+    
+    
+    
     def Handle_Ui_Changes(self):
         try:
             self.load_current_user_info()
@@ -86,7 +98,59 @@ class MainApp(QMainWindow, ui):
         self.pushButton_log_out.clicked.connect(self.log_out)
         self.pushButton_dark_theme.clicked.connect(partial(self.change_theme, "dark"))
         self.pushButton_light_theme.clicked.connect(partial(self.change_theme, "light"))
+        self.pushButton_editprofile.clicked.connect(self.edit_profile)
+        self.pushButton_savechanges.clicked.connect(self.save_profile_settings)
         
+    def edit_profile(self):
+        # Enable Save Changes Button
+        self.pushButton_savechanges.setEnabled(True)
+        
+        
+        # Enable LineEdit Changes
+        self.lineEdit_set_username.setEnabled(True)
+        self.lineEdit_set_firstname.setEnabled(True)
+        self.lineEdit_set_lastname.setEnabled(True)
+        self.lineEdit_set_email.setEnabled(True)
+        
+        # Disable Edit Profile Changes Button
+        self.pushButton_editprofile.setEnabled(False)
+        
+    def save_profile_settings(self):
+        # Enable Edit Profile Button
+        self.pushButton_editprofile.setEnabled(True)
+        
+        
+        new_username = self.lineEdit_set_username.text()
+        new_firstname = self.lineEdit_set_firstname.text()
+        new_lastname= self.lineEdit_set_lastname.text()
+        new_email = self.lineEdit_set_email.text()
+        
+        self.conn = sqlite3.connect("mygpamatedata.db")
+        self.cur = self.conn.cursor()
+        
+        query = 'UPDATE users SET first_name=?, last_name=?, username=?, email=? WHERE user_id = 1'
+        new = (new_firstname, new_lastname, new_username, new_email,)
+        
+        self.cur.execute(query, new)
+        
+        self.conn.commit()
+        self.conn.close()
+        
+        
+        # Disable LineEdit
+        self.lineEdit_set_username.setEnabled(False)
+        self.lineEdit_set_firstname.setEnabled(False)
+        self.lineEdit_set_lastname.setEnabled(False)
+        self.lineEdit_set_email.setEnabled(False)
+        
+        
+        mg = QMessageBox.information(self, "Status", "Changes Saved Succesfully")
+        
+        # Disable Save Changes Button
+        self.pushButton_savechanges.setEnabled(False)
+        
+        
+    
     # Log out function
     def log_out(self):
         mg = QMessageBox()
@@ -208,7 +272,7 @@ class MainApp(QMainWindow, ui):
             self.tabWidget_main_app.setCurrentIndex(0)
             self.create_current_user(fine_tuned_userdata)
             self.load_current_user_info()
-            self.label_welcome.setText(f"Welcome Back, {self.current_user_info[1]}")   
+            self.label_welcome.setText(f"{self.current_user_info[1]}")   
         else: 
             QMessageBox.warning(self, 'Password Empty', 'Invalid Password or Username')
             self.lineEdit_username.setText("")   
