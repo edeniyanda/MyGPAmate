@@ -143,6 +143,8 @@ class MainApp(QMainWindow, ui):
         self.lineEdit_set_lastname.setEnabled(False)
         self.lineEdit_set_email.setEnabled(False)
         
+        # Chane Name in Dashboard
+        self.label_welcome.setText(f"{new_firstname}") 
         
         mg = QMessageBox.information(self, "Status", "Changes Saved Succesfully")
         
@@ -272,7 +274,9 @@ class MainApp(QMainWindow, ui):
             self.tabWidget_main_app.setCurrentIndex(0)
             self.create_current_user(fine_tuned_userdata)
             self.load_current_user_info()
-            self.label_welcome.setText(f"{self.current_user_info[1]}")   
+            self.label_welcome.setText(f"{self.current_user_info[1]}") 
+            self.lineEdit_username.setText("")
+            self.lineEdit_password.setText("")  
         else: 
             QMessageBox.warning(self, 'Password Empty', 'Invalid Password or Username')
             self.lineEdit_username.setText("")   

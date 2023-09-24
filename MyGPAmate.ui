@@ -32,7 +32,7 @@
      </font>
     </property>
     <property name="currentIndex">
-     <number>3</number>
+     <number>2</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -268,7 +268,7 @@
        <property name="geometry">
         <rect>
          <x>450</x>
-         <y>440</y>
+         <y>450</y>
          <width>261</width>
          <height>41</height>
         </rect>
@@ -285,40 +285,33 @@
         <string>Create Account</string>
        </property>
       </widget>
-      <widget class="QLabel" name="label_28">
-       <property name="geometry">
-        <rect>
-         <x>760</x>
-         <y>150</y>
-         <width>91</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>First Name</string>
-       </property>
-      </widget>
       <widget class="QLineEdit" name="lineEdit_first_name_2">
        <property name="geometry">
         <rect>
-         <x>850</x>
+         <x>70</x>
          <y>150</y>
          <width>261</width>
          <height>31</height>
         </rect>
        </property>
+       <property name="placeholderText">
+        <string>First Name</string>
+       </property>
       </widget>
       <widget class="QLineEdit" name="lineEdit_last_name_2">
        <property name="geometry">
         <rect>
-         <x>850</x>
-         <y>220</y>
+         <x>750</x>
+         <y>150</y>
          <width>261</width>
          <height>31</height>
         </rect>
        </property>
        <property name="echoMode">
         <enum>QLineEdit::Normal</enum>
+       </property>
+       <property name="placeholderText">
+        <string>Last Name</string>
        </property>
       </widget>
       <widget class="QLabel" name="label_30">
@@ -348,10 +341,10 @@
       <widget class="QLabel" name="label_31">
        <property name="geometry">
         <rect>
-         <x>380</x>
+         <x>330</x>
          <y>70</y>
-         <width>371</width>
-         <height>301</height>
+         <width>411</width>
+         <height>361</height>
         </rect>
        </property>
        <property name="text">
@@ -361,23 +354,10 @@
         <pixmap resource="resources.qrc">:/assets/images/signup.png</pixmap>
        </property>
       </widget>
-      <widget class="QLabel" name="label_32">
-       <property name="geometry">
-        <rect>
-         <x>760</x>
-         <y>220</y>
-         <width>91</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Last Name</string>
-       </property>
-      </widget>
       <widget class="QLineEdit" name="lineEdit_email_2">
        <property name="geometry">
         <rect>
-         <x>850</x>
+         <x>750</x>
          <y>290</y>
          <width>261</width>
          <height>31</height>
@@ -389,38 +369,15 @@
        <property name="echoMode">
         <enum>QLineEdit::Normal</enum>
        </property>
-      </widget>
-      <widget class="QLabel" name="label_33">
-       <property name="geometry">
-        <rect>
-         <x>760</x>
-         <y>290</y>
-         <width>81</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="text">
+       <property name="placeholderText">
         <string>Email</string>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_34">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>210</y>
-         <width>111</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Password</string>
        </property>
       </widget>
       <widget class="QLineEdit" name="lineEdit_confirm_password_2">
        <property name="geometry">
         <rect>
-         <x>170</x>
-         <y>280</y>
+         <x>70</x>
+         <y>290</y>
          <width>261</width>
          <height>31</height>
         </rect>
@@ -430,13 +387,16 @@
        </property>
        <property name="echoMode">
         <enum>QLineEdit::Password</enum>
+       </property>
+       <property name="placeholderText">
+        <string>Confirm Password</string>
        </property>
       </widget>
       <widget class="QLineEdit" name="lineEdit_password_2">
        <property name="geometry">
         <rect>
-         <x>170</x>
-         <y>210</y>
+         <x>70</x>
+         <y>220</y>
          <width>261</width>
          <height>31</height>
         </rect>
@@ -447,25 +407,15 @@
        <property name="echoMode">
         <enum>QLineEdit::Password</enum>
        </property>
-      </widget>
-      <widget class="QLabel" name="label_35">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>280</y>
-         <width>151</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Confirm Password</string>
+       <property name="placeholderText">
+        <string>Password</string>
        </property>
       </widget>
       <widget class="QLabel" name="label_36">
        <property name="geometry">
         <rect>
          <x>390</x>
-         <y>380</y>
+         <y>400</y>
          <width>151</width>
          <height>31</height>
         </rect>
@@ -478,7 +428,7 @@
        <property name="geometry">
         <rect>
          <x>530</x>
-         <y>380</y>
+         <y>400</y>
          <width>261</width>
          <height>31</height>
         </rect>
@@ -512,23 +462,13 @@
       <widget class="QLineEdit" name="lineEdit_user_name_2">
        <property name="geometry">
         <rect>
-         <x>170</x>
-         <y>140</y>
+         <x>750</x>
+         <y>220</y>
          <width>261</width>
          <height>31</height>
         </rect>
        </property>
-      </widget>
-      <widget class="QLabel" name="label_29">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>140</y>
-         <width>111</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="text">
+       <property name="placeholderText">
         <string>Username</string>
        </property>
       </widget>
@@ -536,7 +476,7 @@
        <property name="geometry">
         <rect>
          <x>460</x>
-         <y>490</y>
+         <y>500</y>
          <width>221</width>
          <height>41</height>
         </rect>
@@ -569,7 +509,7 @@
        </font>
       </property>
       <property name="currentIndex">
-       <number>3</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab_4">
        <attribute name="title">
@@ -1269,10 +1209,10 @@
        <widget class="QPushButton" name="pushButton_log_out">
         <property name="geometry">
          <rect>
-          <x>50</x>
-          <y>360</y>
-          <width>121</width>
-          <height>101</height>
+          <x>1010</x>
+          <y>460</y>
+          <width>71</width>
+          <height>61</height>
          </rect>
         </property>
         <property name="toolTip">
@@ -1287,18 +1227,18 @@
         </property>
         <property name="iconSize">
          <size>
-          <width>70</width>
-          <height>70</height>
+          <width>35</width>
+          <height>40</height>
          </size>
         </property>
        </widget>
        <widget class="QGroupBox" name="groupBox_themes">
         <property name="geometry">
          <rect>
-          <x>650</x>
-          <y>40</y>
-          <width>421</width>
-          <height>461</height>
+          <x>0</x>
+          <y>0</y>
+          <width>281</width>
+          <height>251</height>
          </rect>
         </property>
         <property name="title">
@@ -1307,10 +1247,10 @@
         <widget class="QPushButton" name="pushButton_dark_theme">
          <property name="geometry">
           <rect>
-           <x>40</x>
-           <y>190</y>
-           <width>121</width>
-           <height>101</height>
+           <x>10</x>
+           <y>40</y>
+           <width>101</width>
+           <height>81</height>
           </rect>
          </property>
          <property name="text">
@@ -1320,10 +1260,10 @@
         <widget class="QPushButton" name="pushButton_light_theme">
          <property name="geometry">
           <rect>
-           <x>250</x>
-           <y>190</y>
-           <width>121</width>
-           <height>101</height>
+           <x>160</x>
+           <y>40</y>
+           <width>101</width>
+           <height>81</height>
           </rect>
          </property>
          <property name="text">
@@ -1333,10 +1273,10 @@
         <widget class="QPushButton" name="pushButton_log_out_4">
          <property name="geometry">
           <rect>
-           <x>250</x>
-           <y>310</y>
-           <width>121</width>
-           <height>101</height>
+           <x>160</x>
+           <y>150</y>
+           <width>101</width>
+           <height>81</height>
           </rect>
          </property>
          <property name="text">
@@ -1346,10 +1286,10 @@
         <widget class="QPushButton" name="pushButton_log_out_5">
          <property name="geometry">
           <rect>
-           <x>40</x>
-           <y>310</y>
-           <width>121</width>
-           <height>101</height>
+           <x>10</x>
+           <y>150</y>
+           <width>101</width>
+           <height>81</height>
           </rect>
          </property>
          <property name="text">
