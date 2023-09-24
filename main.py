@@ -17,9 +17,8 @@ class MainApp(QMainWindow, ui):
     def __init__(self):
         QMainWindow.__init__(self)
         self.setupUi(self)
-        # self.current_semester = "First Semester"
-        # self.current_level = "!00 Level"
         self.settings_data = self.load_settings()
+        self.initial_current_theme = self.settings_data["theme"]
         self.Handle_Ui_Changes()
         self.exectue_settings(self.settings_data)
         self.Handle_Button()
@@ -42,7 +41,7 @@ class MainApp(QMainWindow, ui):
             event.ignore()  # Ignore the close event
     
     def save_changes(self):
-        data = (1, "dark", "12", "test", self.comboBox_level.currentText(), self.comboBox_semester.currentText())
+        data = (1, self.initial_current_theme, "12", "test", self.comboBox_level.currentText(), self.comboBox_semester.currentText())
         save_data = settings("mygpamatedata.db")
         save_data.save_settings(data)
     
@@ -226,6 +225,7 @@ class MainApp(QMainWindow, ui):
         self.current_course_table =  f"{n}{m}Semester"
     # Change theme function 
     def change_theme(self, theme:str):
+        self.initial_current_theme = theme
         self.conn = sqlite3.connect('mygpamatedata.db')
         self.cursor = self.conn.cursor()
 
