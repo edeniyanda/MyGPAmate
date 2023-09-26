@@ -32,7 +32,7 @@
      </font>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>3</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -509,7 +509,7 @@
        </font>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="tab_4">
        <attribute name="title">
@@ -1011,6 +1011,44 @@
         <property name="alignment">
          <set>Qt::AlignCenter</set>
         </property>
+       </widget>
+       <widget class="QTableWidget" name="tableWidget">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>140</y>
+          <width>821</width>
+          <height>351</height>
+         </rect>
+        </property>
+        <property name="columnCount">
+         <number>5</number>
+        </property>
+        <column>
+         <property name="text">
+          <string>Course Title</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Course Code</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Course Unit</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Score</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Grade</string>
+         </property>
+        </column>
        </widget>
       </widget>
       <widget class="QWidget" name="tab_6">
