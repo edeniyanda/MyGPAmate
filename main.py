@@ -53,9 +53,7 @@ class MainApp(QMainWindow, ui):
         self.lineEdit_set_firstname.setText(profile_data[1])
         self.lineEdit_set_lastname.setText(profile_data[2])
         self.lineEdit_set_email.setText(profile_data[5])
-    
-    
-    
+
     def Handle_Ui_Changes(self):
         try:
             self.load_current_user_info()
@@ -78,8 +76,8 @@ class MainApp(QMainWindow, ui):
         self.load_timeline_info()
         self.load_course_info()
         self.handle_combox_changes()
-            
-  
+        # self.tableWidget_course_info.itemSelectionChanged.connect(self.update_button_state)
+        self.load_grade_info()
         
     def Handle_Button(self):
         self.pushButton_get_started.clicked.connect(partial(self.change_welcome_widget_index, 1))        
@@ -99,7 +97,30 @@ class MainApp(QMainWindow, ui):
         self.pushButton_light_theme.clicked.connect(partial(self.change_theme, "light"))
         self.pushButton_editprofile.clicked.connect(self.edit_profile)
         self.pushButton_savechanges.clicked.connect(self.save_profile_settings)
-        
+        # self.pushButton_delete_course.clicked.connect(self.delete_current_row)
+    
+    # def delete_current_row(self):
+    #     current_row = self.tableWidget_course_info.currentRow()
+    #     current_row = -1
+    #     print(current_row)
+    #     if current_row >= 1:
+    #         response = QMessageBox.question(self,
+    #                             "Delete COurse?",
+    #                             "Are you sure you want to delete this Course",
+    #                             QMessageBox.Yes | QMessageBox.No,
+    #                             QMessageBox.No)
+    #         if response == QMessageBox.Yes :
+    #             self.tableWidget_course_info.removeRow(current_row)
+                
+    #         else:
+    #             ...        
+    # def update_button_state(self):
+    #     current_row = self.tableWidget_course_info.currentRow()
+    #     if current_row >= 0:
+    #         self.pushButton_delete_course.setEnabled(True)
+    #     else:
+    #         self.pushButton_delete_course.setEnabled(False)
+      
     def edit_profile(self):
         # Enable Save Changes Button
         self.pushButton_savechanges.setEnabled(True)
@@ -406,17 +427,31 @@ class MainApp(QMainWindow, ui):
         else:
             self.tableWidget_course_info.insertRow(row - 1)
             
-        
         for i in range(3):
             self.tableWidget_course_info.setItem(row -1 , i, QTableWidgetItem(course_info[course_code][i]))
 
+    def load_grade_info(self):
+        grade_data_handle = update_table("mygpamatedata.db", self.current_course_table, self.current_level, self.current_semester)
+        grade_data =  grade_data_handle.load_course_from_database() 
         
+        self.tableWidget_grade.setRowCount(1)
+        
+        if grade_data:
+            for i in range(len(grade_data)):
+                fine_grade_data= grade_data[i]
+                new_fine_grade_data= list(fine_grade_data[1:])
+                for j in range(len(new_fine_grade_data)):
+                    grade_item = QTableWidgetItem(str(new_fine_grade_data[j]))
+                    self.tableWidget_grade.setItem(i, j, grade_item)
+                    # print(new_fine_grade_data[j], end=" ")
+                row_position = self.tableWidget_grade.rowCount()
+                self.tableWidget_grade.insertRow(row_position)
+
     def load_course_info(self):
         data_handle = update_table("mygpamatedata.db", self.current_course_table, self.current_level, self.current_semester)
         data =  data_handle.load_course_from_database() 
         
         self.tableWidget_course_info.setRowCount(1)
-        
         if data:
             for i in range(len(data)):
                 fine_data = data[i]
@@ -425,7 +460,9 @@ class MainApp(QMainWindow, ui):
                     item = QTableWidgetItem(str(new_fine_data[j]))
                     self.tableWidget_course_info.setItem(i, j, item)
                 row_position = self.tableWidget_course_info.rowCount()
-                self.tableWidget_course_info.insertRow(row_position)
+                if row_position != len(data):
+                    self.tableWidget_course_info.insertRow(row_position)
+                
     
     def save_courses(self):
         num_row = self.tableWidget_course_info.rowCount()
@@ -438,6 +475,8 @@ class MainApp(QMainWindow, ui):
             course_data = []
             for col in range(num_col):
                 item = self.tableWidget_course_info.item(row, col)
+                if len(str(item)) == 0:
+                    continue
                 course_data.append(item.text())
             all_data.append(tuple(course_data))
         if len(all_data) == 0:
