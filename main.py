@@ -132,9 +132,13 @@ class MainApp(QMainWindow, ui):
                 grade_data.append(itemtoadd.text())
             all_data.append(tuple(grade_data))  
             
-        print(all_data) 
-        # data_handle = update_table("mygpamatedata.db", self.current_grade_table, self.current_grade_level, self.current_grade_semester) 
-        # data_handle.save_grade_to_database(all_data)
+        data_handle = update_table("mygpamatedata.db", self.current_grade_table, self.current_grade_level, self.current_grade_semester) 
+        data_handle.save_grade_to_database(all_data)
+        QMessageBox.information(self,
+                                "MyGPAmate - Grade",
+                                "Grade Saved Succesfully",
+                                )
+        
         
     def edit_grade(self):
         if self.pushButton_edit_grade.text() == "Edit Mode":
