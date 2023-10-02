@@ -117,6 +117,24 @@ class MainApp(QMainWindow, ui):
         self.pushButton_savechanges.clicked.connect(self.save_profile_settings)
         # self.pushButton_delete_course.clicked.connect(self.delete_current_row)
         self.pushButton_edit_grade.clicked.connect(self.edit_grade)
+        self.pushButton_save_grade_changes.clicked.connect(self.save_grade_changes)
+    
+    
+    def save_grade_changes(self):
+        num_row = self.tableWidget_grade.rowCount()
+        num_col = self.tableWidget_grade.columnCount() - 1
+        
+        all_data = []
+        for i in range(num_row):
+            grade_data = []
+            for j in range(num_col):
+                itemtoadd = self.tableWidget_grade.item(i, j)
+                grade_data.append(itemtoadd.text())
+            all_data.append(tuple(grade_data))  
+            
+        print(all_data) 
+        # data_handle = update_table("mygpamatedata.db", self.current_grade_table, self.current_grade_level, self.current_grade_semester) 
+        # data_handle.save_grade_to_database(all_data)
         
     def edit_grade(self):
         if self.pushButton_edit_grade.text() == "Edit Mode":
@@ -143,8 +161,6 @@ class MainApp(QMainWindow, ui):
             self.statusBar().showMessage("🔥You are in Read Only Mode")
             self.pushButton_edit_grade.setText("Edit Mode")
 
-            
-        
 
     def edit_profile(self):
         # Enable Save Changes Button
@@ -195,8 +211,6 @@ class MainApp(QMainWindow, ui):
         
         # Disable Save Changes Button
         self.pushButton_savechanges.setEnabled(False)
-        
-        
     
     # Log out function
     def log_out(self):
@@ -512,7 +526,7 @@ class MainApp(QMainWindow, ui):
             QMessageBox.critical(self, "Error", "Courses Cannot Be Empty")
             return
         
-        data_handle = update_table("mygpamatedata.db", self.current_course_table, "100", self.current_semester) 
+        data_handle = update_table("mygpamatedata.db", self.current_course_table, self.current_level, self.current_semester) 
         data_handle.save_courses_to_database(all_data)
         
         # Show Success message 
@@ -546,7 +560,6 @@ class MainApp(QMainWindow, ui):
             self.current_grade_table =  f"{n}{m}Semester"
             
             self.load_grade_info()
-            print("Success")
        
         
     def show_message_box(self, title, text, icon, buttons=QMessageBox.Ok | QMessageBox.Cancel):

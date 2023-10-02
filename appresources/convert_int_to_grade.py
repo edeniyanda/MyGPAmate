@@ -20,7 +20,3 @@ class convert_score_to_grade:
         return self.grade_dict
         
 
-s = [34, 54, 100, 87, 54, 64, 75, 12, 54, 12, 100]
-
-help = convert_score_to_grade(s)
-print(help.convert())
