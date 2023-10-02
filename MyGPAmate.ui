@@ -509,7 +509,7 @@
        </font>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab_4">
        <attribute name="title">
@@ -753,7 +753,7 @@
          <rect>
           <x>93</x>
           <y>-10</y>
-          <width>76</width>
+          <width>191</width>
           <height>39</height>
          </rect>
         </property>
@@ -982,19 +982,6 @@
           <string>Second Semester</string>
          </property>
         </item>
-       </widget>
-       <widget class="QLabel" name="label_25">
-        <property name="geometry">
-         <rect>
-          <x>900</x>
-          <y>170</y>
-          <width>111</width>
-          <height>61</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>TextLabel</string>
-        </property>
        </widget>
       </widget>
       <widget class="QWidget" name="tab_8">

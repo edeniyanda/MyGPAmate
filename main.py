@@ -6,7 +6,7 @@ import qdarkstyle
 import sys
 import sqlite3
 from functools import partial
-from appresources import encrypt_password, update_table, settings, load_data_from_db
+from appresources import encrypt_password, update_table, settings, load_data_from_db, edittable
 
 
 
@@ -49,17 +49,18 @@ class MainApp(QMainWindow, ui):
         profile = load_data_from_db("mygpamatedata.db", "users")
         profile_data = profile.load_data()
         
+        self.label_welcome.setText(f"{profile_data[1]}")
         self.lineEdit_set_username.setText(profile_data[3])
         self.lineEdit_set_firstname.setText(profile_data[1])
         self.lineEdit_set_lastname.setText(profile_data[2])
         self.lineEdit_set_email.setText(profile_data[5])
+        
 
     def Handle_Ui_Changes(self):
         try:
             self.load_current_user_info()
             self.tabWidget_main.setCurrentIndex(3)
             self.tabWidget_main_app.setCurrentIndex(0)
-            self.label_welcome.setText(f"{self.current_user_info[1]}")
         except:  
             self.tabWidget_main.setCurrentIndex(0)
         self.tabWidget_main.tabBar().setVisible(False)
@@ -67,11 +68,12 @@ class MainApp(QMainWindow, ui):
         for i in range(2):
             if i == 0:
                 self.tableWidget_course_info.setColumnWidth(i, 500)
-                ...
             elif i == 1:
                 self.tableWidget_course_info.setColumnWidth(i, 100)
             elif i == 2:
                 self.tableWidget_course_info.setColumnWidth(i, 50)
+                
+        self.tableWidget_grade.setColumnWidth(0, 380)
         self.tableWidget_course_info.insertRow(0)
         self.load_timeline_info()
         self.load_course_info()
@@ -98,29 +100,7 @@ class MainApp(QMainWindow, ui):
         self.pushButton_editprofile.clicked.connect(self.edit_profile)
         self.pushButton_savechanges.clicked.connect(self.save_profile_settings)
         # self.pushButton_delete_course.clicked.connect(self.delete_current_row)
-    
-    # def delete_current_row(self):
-    #     current_row = self.tableWidget_course_info.currentRow()
-    #     current_row = -1
-    #     print(current_row)
-    #     if current_row >= 1:
-    #         response = QMessageBox.question(self,
-    #                             "Delete COurse?",
-    #                             "Are you sure you want to delete this Course",
-    #                             QMessageBox.Yes | QMessageBox.No,
-    #                             QMessageBox.No)
-    #         if response == QMessageBox.Yes :
-    #             self.tableWidget_course_info.removeRow(current_row)
-                
-    #         else:
-    #             ...        
-    # def update_button_state(self):
-    #     current_row = self.tableWidget_course_info.currentRow()
-    #     if current_row >= 0:
-    #         self.pushButton_delete_course.setEnabled(True)
-    #     else:
-    #         self.pushButton_delete_course.setEnabled(False)
-      
+
     def edit_profile(self):
         # Enable Save Changes Button
         self.pushButton_savechanges.setEnabled(True)
@@ -443,9 +423,22 @@ class MainApp(QMainWindow, ui):
                 for j in range(len(new_fine_grade_data)):
                     grade_item = QTableWidgetItem(str(new_fine_grade_data[j]))
                     self.tableWidget_grade.setItem(i, j, grade_item)
-                    # print(new_fine_grade_data[j], end=" ")
                 row_position = self.tableWidget_grade.rowCount()
-                self.tableWidget_grade.insertRow(row_position)
+                if row_position != len(grade_data):
+                    self.tableWidget_grade.insertRow(row_position) 
+                    
+        # Set the item delegate for the table
+        delegate = edittable.MyDelegate()
+        self.tableWidget_grade.setItemDelegate(delegate)
+
+        # Set all columns as uneditable initially
+        self.tableWidget_grade.setEditTriggers(QTableWidget.NoEditTriggers)
+
+        # Allow editing for specific columns (e.g., column 3)
+        self.tableWidget_grade.setEditTriggers(QTableWidget.DoubleClicked)  # or any other desired trigger
+
+
+        
 
     def load_course_info(self):
         data_handle = update_table("mygpamatedata.db", self.current_course_table, self.current_level, self.current_semester)
