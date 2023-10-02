@@ -200,10 +200,7 @@ class MainApp(QMainWindow, ui):
     def load_timeline_info(self):
         self.comboBox_level.setCurrentText(self.settings_data["current_level"])
         self.comboBox_semester.setCurrentText(self.settings_data["current_semester"])
-        self.refresh_table()
-        
-
-
+        self.refresh_table("Courses")
 
     # Execute settings
     def exectue_settings(self, data):
@@ -484,20 +481,33 @@ class MainApp(QMainWindow, ui):
     
     
     def handle_combox_changes(self):
-        self.comboBox_level.currentTextChanged.connect(self.refresh_table)
-        self.comboBox_semester.currentTextChanged.connect(self.refresh_table)
+        self.comboBox_level.currentTextChanged.connect(partial(self.refresh_table, "Courses"))
+        self.comboBox_semester.currentTextChanged.connect(partial(self.refresh_table, "Courses"))
+        self.comboBox_level_3.currentTextChanged.connect(partial(self.refresh_table, "Grade"))
+        self.comboBox_semester_3.currentTextChanged.connect(partial(self.refresh_table, "Grade"))
         
-    def refresh_table(self):
-        self.current_level = self.comboBox_level.currentText()
-        self.current_semester = self.comboBox_semester.currentText()
+    def refresh_table(self, table_type):
+        if table_type == "Courses":
+            self.current_level = self.comboBox_level.currentText()
+            self.current_semester = self.comboBox_semester.currentText()
         
-        n = self.current_level.split()[0]
-        m = self.current_semester.split()[0]
+            n = self.current_level.split()[0]
+            m = self.current_semester.split()[0]
+
+            self.current_course_table =  f"{n}{m}Semester"
+            
+            self.load_course_info()
+        elif table_type == "Grade":
+            self.current_grade_level = self.comboBox_level_3.currentText()
+            self.current_grade_semester = self.comboBox_semester_3.currentText()
         
-        
-        self.current_course_table =  f"{n}{m}Semester"
-        
-        self.load_course_info()
+            n = self.current_grade_level.split()[0]
+            m = self.current_grade_semester.split()[0]
+
+            self.current_grade_table =  f"{n}{m}Semester"
+            
+            self.load_grade_info()
+            print("Success")
        
         
     def show_message_box(self, title, text, icon, buttons=QMessageBox.Ok | QMessageBox.Cancel):
