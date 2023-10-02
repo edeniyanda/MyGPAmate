@@ -116,6 +116,35 @@ class MainApp(QMainWindow, ui):
         self.pushButton_editprofile.clicked.connect(self.edit_profile)
         self.pushButton_savechanges.clicked.connect(self.save_profile_settings)
         # self.pushButton_delete_course.clicked.connect(self.delete_current_row)
+        self.pushButton_edit_grade.clicked.connect(self.edit_grade)
+        
+    def edit_grade(self):
+        if self.pushButton_edit_grade.text() == "Edit Mode":
+            message = QMessageBox.information(
+                self,
+                "MyGPPAmate - Grade",
+                "You are now in Edit Mode, \nYou can edit your Score"
+            )
+            self.statusBar().showMessage("🔥You are in Edit Mode")
+            self.pushButton_edit_grade.setText("Read Only Mode")
+            # Set the item delegate for the table
+            delegate = edittable.MyDelegate()
+            self.tableWidget_grade.setItemDelegate(delegate)
+            # Allow editing for specific columns (e.g., column 3)
+            self.tableWidget_grade.setEditTriggers(QTableWidget.DoubleClicked)  # or any other desired trigger
+        else:
+            # Set all columns as uneditable initially
+            self.tableWidget_grade.setEditTriggers(QTableWidget.NoEditTriggers)
+            message = QMessageBox.information(
+                self,
+                "MyGPPAmate - Grade",
+                "You are now back in Read\n Only Mode"
+            )
+            self.statusBar().showMessage("🔥You are in Read Only Mode")
+            self.pushButton_edit_grade.setText("Edit Mode")
+
+            
+        
 
     def edit_profile(self):
         # Enable Save Changes Button
@@ -440,15 +469,12 @@ class MainApp(QMainWindow, ui):
                 if row_position != len(grade_data):
                     self.tableWidget_grade.insertRow(row_position) 
                     
-        # Set the item delegate for the table
-        delegate = edittable.MyDelegate()
-        self.tableWidget_grade.setItemDelegate(delegate)
 
         # Set all columns as uneditable initially
         self.tableWidget_grade.setEditTriggers(QTableWidget.NoEditTriggers)
 
-        # Allow editing for specific columns (e.g., column 3)
-        self.tableWidget_grade.setEditTriggers(QTableWidget.DoubleClicked)  # or any other desired trigger
+        # # Allow editing for specific columns (e.g., column 3)
+        # self.tableWidget_grade.setEditTriggers(QTableWidget.DoubleClicked)  # or any other desired trigger
 
     def load_course_info(self):
         data_handle = update_table("mygpamatedata.db", self.current_course_table, self.current_level, self.current_semester)
