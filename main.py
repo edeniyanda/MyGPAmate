@@ -17,6 +17,7 @@ class MainApp(QMainWindow, ui):
     def __init__(self):
         QMainWindow.__init__(self)
         self.setupUi(self)
+        self.default_values()
         self.settings_data = self.load_settings()
         self.initial_current_theme = self.settings_data["theme"]
         self.Handle_Ui_Changes()
@@ -39,7 +40,22 @@ class MainApp(QMainWindow, ui):
             self.save_changes()
         else:
             event.ignore()  # Ignore the close event
+            
+    def default_values(self):
+        self.current_level = "100 Level"
+        self.current_semester = "First Semester"
+        
+        n = self.current_level.split()[0]
+        m = self.current_semester.split()[0]
+        self.current_course_table =  f"{n}{m}Semester"
+            
+        self.current_grade_level = "100 Level"
+        self.current_grade_semester = "First Semester"
     
+        n = self.current_grade_level.split()[0]
+        m = self.current_grade_semester.split()[0]
+        self.current_grade_table =  f"{n}{m}Semester"
+
     def save_changes(self):
         data = (1, self.initial_current_theme, "12", "test", self.comboBox_level.currentText(), self.comboBox_semester.currentText())
         save_data = settings("mygpamatedata.db")
@@ -408,7 +424,7 @@ class MainApp(QMainWindow, ui):
             self.tableWidget_course_info.setItem(row -1 , i, QTableWidgetItem(course_info[course_code][i]))
 
     def load_grade_info(self):
-        grade_data_handle = update_table("mygpamatedata.db", self.current_course_table, self.current_level, self.current_semester)
+        grade_data_handle = update_table("mygpamatedata.db", self.current_grade_table, self.current_grade_level, self.current_grade_semester)
         grade_data =  grade_data_handle.load_course_from_database() 
         
         self.tableWidget_grade.setRowCount(1)
@@ -433,9 +449,6 @@ class MainApp(QMainWindow, ui):
 
         # Allow editing for specific columns (e.g., column 3)
         self.tableWidget_grade.setEditTriggers(QTableWidget.DoubleClicked)  # or any other desired trigger
-
-
-        
 
     def load_course_info(self):
         data_handle = update_table("mygpamatedata.db", self.current_course_table, self.current_level, self.current_semester)
