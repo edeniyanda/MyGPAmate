@@ -6,7 +6,7 @@ import qdarkstyle
 import sys
 import sqlite3
 from functools import partial
-from appresources import encrypt_password, update_table, settings, load_data_from_db, edittable
+from appresources import encrypt_password, update_table, settings, load_data_from_db, edittable, convert_score_to_grade
 
 
 
@@ -118,8 +118,26 @@ class MainApp(QMainWindow, ui):
         # self.pushButton_delete_course.clicked.connect(self.delete_current_row)
         self.pushButton_edit_grade.clicked.connect(self.edit_grade)
         self.pushButton_save_grade_changes.clicked.connect(self.save_grade_changes)
+        self.pushButton_estimate_grade.clicked.connect(self.estimate_grade)
     
     
+    def estimate_grade(self):
+        num_row = self.tableWidget_grade.rowCount()
+        scores = []
+        for i in range(num_row):
+            score = int(self.tableWidget_grade.item(i, 3).text())
+            scores.append(score)
+        grade_list_object = convert_score_to_grade(scores)
+        grade_list = grade_list_object.convert()
+        
+        for i in range(num_row):
+            grade_to_add = QTableWidgetItem(str(grade_list[i]))
+            self.tableWidget_grade.setItem(i, 4, grade_to_add)
+            
+        # QMessageBox.information(self,
+        #             "MyGPAmate",
+        #             "Graded Successfully")
+            
     def save_grade_changes(self):
         num_row = self.tableWidget_grade.rowCount()
         num_col = self.tableWidget_grade.columnCount() - 1
@@ -487,6 +505,8 @@ class MainApp(QMainWindow, ui):
                 if row_position != len(grade_data):
                     self.tableWidget_grade.insertRow(row_position) 
                     
+        self.estimate_grade()
+                    
 
         # Set all columns as uneditable initially
         self.tableWidget_grade.setEditTriggers(QTableWidget.NoEditTriggers)
@@ -557,6 +577,7 @@ class MainApp(QMainWindow, ui):
         elif table_type == "Grade":
             self.pushButton_edit_grade.setText("Edit Mode")
             self.statusBar().showMessage("")
+            self.tableWidget_grade.setItem(0, 4, QTableWidgetItem(" "))
             self.current_grade_level = self.comboBox_level_3.currentText()
             self.current_grade_semester = self.comboBox_semester_3.currentText()
         
@@ -566,6 +587,8 @@ class MainApp(QMainWindow, ui):
             self.current_grade_table =  f"{n}{m}Semester"
             
             self.load_grade_info()
+            
+            
        
         
     def show_message_box(self, title, text, icon, buttons=QMessageBox.Ok | QMessageBox.Cancel):

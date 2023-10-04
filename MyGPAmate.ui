@@ -1152,6 +1152,19 @@
          <string>Save Changes</string>
         </property>
        </widget>
+       <widget class="QPushButton" name="pushButton_estimate_grade">
+        <property name="geometry">
+         <rect>
+          <x>930</x>
+          <y>380</y>
+          <width>151</width>
+          <height>41</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Estimate Grade</string>
+        </property>
+       </widget>
       </widget>
       <widget class="QWidget" name="tab_6">
        <attribute name="title">
