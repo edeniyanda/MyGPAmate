@@ -555,6 +555,8 @@ class MainApp(QMainWindow, ui):
             
             self.load_course_info()
         elif table_type == "Grade":
+            self.pushButton_edit_grade.setText("Edit Mode")
+            self.statusBar().showMessage("")
             self.current_grade_level = self.comboBox_level_3.currentText()
             self.current_grade_semester = self.comboBox_semester_3.currentText()
         
