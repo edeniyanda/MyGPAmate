@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1168</width>
+    <width>1160</width>
     <height>592</height>
    </rect>
   </property>
@@ -509,7 +509,7 @@
        </font>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>4</number>
       </property>
       <widget class="QWidget" name="tab_4">
        <attribute name="title">
@@ -1022,7 +1022,7 @@
          </rect>
         </property>
         <property name="columnCount">
-         <number>5</number>
+         <number>6</number>
         </property>
         <column>
          <property name="text">
@@ -1047,6 +1047,11 @@
         <column>
          <property name="text">
           <string>Grade</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Grade *  Unit</string>
          </property>
         </column>
        </widget>
@@ -1389,7 +1394,7 @@
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>0</y>
+          <y>20</y>
           <width>281</width>
           <height>251</height>
          </rect>
@@ -1450,6 +1455,68 @@
          </property>
         </widget>
        </widget>
+       <widget class="QGroupBox" name="groupBox_3">
+        <property name="geometry">
+         <rect>
+          <x>290</x>
+          <y>20</y>
+          <width>551</width>
+          <height>401</height>
+         </rect>
+        </property>
+        <property name="title">
+         <string>Grade</string>
+        </property>
+        <widget class="QTableWidget" name="tableWidget_grader">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>40</y>
+           <width>261</width>
+           <height>271</height>
+          </rect>
+         </property>
+         <property name="toolTip">
+          <string>Grader</string>
+         </property>
+         <column>
+          <property name="text">
+           <string>Grade</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Unit</string>
+          </property>
+         </column>
+        </widget>
+        <widget class="QPushButton" name="pushButton_edit_unit">
+         <property name="geometry">
+          <rect>
+           <x>300</x>
+           <y>40</y>
+           <width>111</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Edit Unit </string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="pushButton_save_unit_change">
+         <property name="geometry">
+          <rect>
+           <x>300</x>
+           <y>280</y>
+           <width>111</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Save</string>
+         </property>
+        </widget>
+       </widget>
       </widget>
      </widget>
      <widget class="QPushButton" name="pushButton_dash_board">
@@ -1477,6 +1544,9 @@
         <height>50</height>
        </size>
       </property>
+      <property name="shortcut">
+       <string>Ctrl+1</string>
+      </property>
      </widget>
      <widget class="QPushButton" name="pushButton_courses">
       <property name="geometry">
@@ -1502,6 +1572,9 @@
         <width>50</width>
         <height>50</height>
        </size>
+      </property>
+      <property name="shortcut">
+       <string>Ctrl+2</string>
       </property>
      </widget>
      <widget class="QPushButton" name="pushButton_grade">
@@ -1529,6 +1602,9 @@
         <height>50</height>
        </size>
       </property>
+      <property name="shortcut">
+       <string>Ctrl+3</string>
+      </property>
      </widget>
      <widget class="QPushButton" name="pushButton_profile">
       <property name="geometry">
@@ -1555,6 +1631,9 @@
         <height>50</height>
        </size>
       </property>
+      <property name="shortcut">
+       <string>Ctrl+4</string>
+      </property>
      </widget>
      <widget class="QPushButton" name="pushButton_settings">
       <property name="geometry">
@@ -1580,6 +1659,9 @@
         <width>50</width>
         <height>50</height>
        </size>
+      </property>
+      <property name="shortcut">
+       <string>Ctrl+5</string>
       </property>
      </widget>
     </widget>

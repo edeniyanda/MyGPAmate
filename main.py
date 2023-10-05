@@ -41,6 +41,26 @@ class MainApp(QMainWindow, ui):
         else:
             event.ignore()  # Ignore the close event
             
+    def load_grade_grader(self):
+        gradeinst = load_data_from_db("mygpamatedata.db", "GradeGrader")
+        data = gradeinst.load_data_for_grade()
+
+        self.tableWidget_grader.setRowCount(1)
+        
+        for i in range(len(data)):
+            row_data = data[i][1:]
+            for j in range(len(row_data)):
+                item_to_add = QTableWidgetItem(row_data[j]) 
+                self.tableWidget_grader.setItem(i, j , item_to_add)
+            row_pos = self.tableWidget_grader.rowCount()
+            if row_pos != len(data):
+                self.tableWidget_grader.insertRow(row_pos)
+            
+        # Set all columns as uneditable initially
+        self.tableWidget_grader.setEditTriggers(QTableWidget.NoEditTriggers)
+                
+            
+        
     def default_values(self):
         self.current_level = "100 Level"
         self.current_semester = "First Semester"
@@ -73,6 +93,7 @@ class MainApp(QMainWindow, ui):
         
 
     def Handle_Ui_Changes(self):
+        self.load_grade_grader()
         try:
             self.load_current_user_info()
             self.tabWidget_main.setCurrentIndex(3)
@@ -119,7 +140,41 @@ class MainApp(QMainWindow, ui):
         self.pushButton_edit_grade.clicked.connect(self.edit_grade)
         self.pushButton_save_grade_changes.clicked.connect(self.save_grade_changes)
         self.pushButton_estimate_grade.clicked.connect(self.estimate_grade)
+        self.pushButton_edit_unit.clicked.connect(self.edit_grader)
+        self.pushButton_save_unit_change.clicked.connect(self.save_grader)   
+       
+    def save_grader(self):
+        num_row = self.tableWidget_grader.rowCount()
+        num_col = self.tableWidget_grader.columnCount()
+        
+
+        grade_data = []
+        for i in range(num_row) :
+            row_data = []
+            for j in range(num_col):
+                grade_item = self.tableWidget_grader.item(i, j)
+                row_data.append(grade_item.text())
+            grade_data.append(row_data)
+        grade_data = tuple(grade_data)
+        data = load_data_from_db("mygpamatedata", "GradeGrader",  grade_data)
+        data.save_data_to_grader()
     
+        
+    def edit_grader(self):
+        get_response = QMessageBox.critical(self, 
+                                            "Warning", 
+                                            "Are you sure you want to edit the Grade Unit?",
+                                            QMessageBox.Yes | QMessageBox.No,
+                                            QMessageBox.No)
+    
+        if get_response == QMessageBox.Yes:
+            delegate = edittable.MyDelegate2()
+            self.tableWidget_grader.setItemDelegate(delegate)
+            # Allow editing for specific columns (e.g., column 3)
+            self.tableWidget_grader.setEditTriggers(QTableWidget.DoubleClicked)  # or any other desired trigger
+            self.statusBar().showMessage("🔥You can now edit Grader")
+        else:
+            ...
     
     def estimate_grade(self):
         num_row = self.tableWidget_grade.rowCount()
