@@ -35,11 +35,13 @@ class load_data_from_db:
         self.conn = sqlite3.connect(self.path_database)
         self.cur = self.conn.cursor()
         
-        self.cur.execute(f"DELETE FFROM {self.table}")
+        self.cur.execute(f"DELETE FROM {self.table}")
         self.conn.commit()
         
-        self.cur.execute(F"INSERT INTO '{self.table}' (grade, unit) VALUES (?,?)", self.data)
-        self.conn.commit()
+        for i in range(len(self.save_data)):
+            query = f"INSERT INTO '{self.table}' (grade, unit) VALUES (?,?)"
+            self.cur.execute(query, self.save_data[i])
+            self.conn.commit()
         self.conn.close()
         
         

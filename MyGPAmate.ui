@@ -1367,8 +1367,8 @@
        <widget class="QPushButton" name="pushButton_log_out">
         <property name="geometry">
          <rect>
-          <x>1010</x>
-          <y>460</y>
+          <x>1000</x>
+          <y>450</y>
           <width>71</width>
           <height>61</height>
          </rect>
@@ -1390,78 +1390,13 @@
          </size>
         </property>
        </widget>
-       <widget class="QGroupBox" name="groupBox_themes">
-        <property name="geometry">
-         <rect>
-          <x>0</x>
-          <y>20</y>
-          <width>281</width>
-          <height>251</height>
-         </rect>
-        </property>
-        <property name="title">
-         <string>Themes</string>
-        </property>
-        <widget class="QPushButton" name="pushButton_dark_theme">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>40</y>
-           <width>101</width>
-           <height>81</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>Dark Theme</string>
-         </property>
-        </widget>
-        <widget class="QPushButton" name="pushButton_light_theme">
-         <property name="geometry">
-          <rect>
-           <x>160</x>
-           <y>40</y>
-           <width>101</width>
-           <height>81</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>Light Theme</string>
-         </property>
-        </widget>
-        <widget class="QPushButton" name="pushButton_log_out_4">
-         <property name="geometry">
-          <rect>
-           <x>160</x>
-           <y>150</y>
-           <width>101</width>
-           <height>81</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>Theme</string>
-         </property>
-        </widget>
-        <widget class="QPushButton" name="pushButton_log_out_5">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>150</y>
-           <width>101</width>
-           <height>81</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>Theme</string>
-         </property>
-        </widget>
-       </widget>
        <widget class="QGroupBox" name="groupBox_3">
         <property name="geometry">
          <rect>
-          <x>290</x>
-          <y>20</y>
-          <width>551</width>
-          <height>401</height>
+          <x>0</x>
+          <y>0</y>
+          <width>431</width>
+          <height>281</height>
          </rect>
         </property>
         <property name="title">
@@ -1473,7 +1408,7 @@
            <x>10</x>
            <y>40</y>
            <width>261</width>
-           <height>271</height>
+           <height>231</height>
           </rect>
          </property>
          <property name="toolTip">
@@ -1494,8 +1429,8 @@
          <property name="geometry">
           <rect>
            <x>300</x>
-           <y>40</y>
-           <width>111</width>
+           <y>160</y>
+           <width>121</width>
            <height>31</height>
           </rect>
          </property>
@@ -1507,13 +1442,91 @@
          <property name="geometry">
           <rect>
            <x>300</x>
-           <y>280</y>
-           <width>111</width>
+           <y>240</y>
+           <width>121</width>
            <height>31</height>
           </rect>
          </property>
          <property name="text">
           <string>Save</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="pushButton_set_to_default">
+         <property name="geometry">
+          <rect>
+           <x>300</x>
+           <y>200</y>
+           <width>121</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Set to Default</string>
+         </property>
+        </widget>
+       </widget>
+       <widget class="QGroupBox" name="groupBox_themes">
+        <property name="geometry">
+         <rect>
+          <x>440</x>
+          <y>0</y>
+          <width>251</width>
+          <height>221</height>
+         </rect>
+        </property>
+        <property name="title">
+         <string>Themes</string>
+        </property>
+        <widget class="QPushButton" name="pushButton_dark_theme">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>30</y>
+           <width>101</width>
+           <height>81</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Dark Theme</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="pushButton_light_theme">
+         <property name="geometry">
+          <rect>
+           <x>150</x>
+           <y>30</y>
+           <width>101</width>
+           <height>81</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Light Theme</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="pushButton_log_out_4">
+         <property name="geometry">
+          <rect>
+           <x>150</x>
+           <y>130</y>
+           <width>101</width>
+           <height>81</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Theme</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="pushButton_log_out_5">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>130</y>
+           <width>101</width>
+           <height>81</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Theme</string>
          </property>
         </widget>
        </widget>

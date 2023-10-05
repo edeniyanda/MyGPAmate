@@ -142,7 +142,40 @@ class MainApp(QMainWindow, ui):
         self.pushButton_estimate_grade.clicked.connect(self.estimate_grade)
         self.pushButton_edit_unit.clicked.connect(self.edit_grader)
         self.pushButton_save_unit_change.clicked.connect(self.save_grader)   
-       
+        self.pushButton_set_to_default.clicked.connect(self.set_grader_to_default)
+        
+        
+    def set_grader_to_default(self):
+        default_data = [['A', '5'], ['B', '4'], ['C', '3'], ['D', '2'], ['E', '2'], ['F', '1']]
+        
+        num_row = self.tableWidget_grader.rowCount()
+        num_col = self.tableWidget_grader.columnCount()
+        
+        for i in range(num_row):
+            for j in range(2):
+              self.tableWidget_grader.setItem(i, j, QTableWidgetItem(default_data[i][j])) 
+              
+        num_row = self.tableWidget_grader.rowCount()
+        num_col = self.tableWidget_grader.columnCount()
+        
+
+        grade_data = []
+        for i in range(num_row) :
+            row_data = []
+            for j in range(num_col):
+                grade_item = self.tableWidget_grader.item(i, j)
+                row_data.append(grade_item.text())
+            grade_data.append(row_data)
+        grade_data = tuple(grade_data)
+        data = load_data_from_db("mygpamatedata.db", "GradeGrader",  grade_data)
+        data.save_data_to_grader()
+        QMessageBox.information(self,
+                    "MyGPAmate Grader",
+                    "Grader Table restored back \nto default Sucesfully",
+                    QMessageBox.Ok)
+              
+               
+            
     def save_grader(self):
         num_row = self.tableWidget_grader.rowCount()
         num_col = self.tableWidget_grader.columnCount()
@@ -156,8 +189,12 @@ class MainApp(QMainWindow, ui):
                 row_data.append(grade_item.text())
             grade_data.append(row_data)
         grade_data = tuple(grade_data)
-        data = load_data_from_db("mygpamatedata", "GradeGrader",  grade_data)
+        data = load_data_from_db("mygpamatedata.db", "GradeGrader",  grade_data)
         data.save_data_to_grader()
+        QMessageBox.information(self,
+                    "MyGPAmate Grader",
+                    "Grader Table Updated Sucesfully",
+                    QMessageBox.Ok)
     
         
     def edit_grader(self):
