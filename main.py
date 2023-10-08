@@ -160,7 +160,7 @@ class MainApp(QMainWindow, ui):
         
 
         grade_data = []
-        for i in range(num_row) :
+        for i in range(num_row):
             row_data = []
             for j in range(num_col):
                 grade_item = self.tableWidget_grader.item(i, j)
@@ -186,6 +186,14 @@ class MainApp(QMainWindow, ui):
             row_data = []
             for j in range(num_col):
                 grade_item = self.tableWidget_grader.item(i, j)
+                if j == 3:
+                    try:   
+                        int(grade_item)
+                    except:
+                        QMessageBox.critical(self,
+                                    "MyGPAmate Grader",
+                                    "Grade Cannot be empty",
+                                    QMessageBox.Ok)
                 row_data.append(grade_item.text())
             grade_data.append(row_data)
         grade_data = tuple(grade_data)
@@ -217,8 +225,19 @@ class MainApp(QMainWindow, ui):
         num_row = self.tableWidget_grade.rowCount()
         scores = []
         for i in range(num_row):
-            score = int(self.tableWidget_grade.item(i, 3).text())
-            scores.append(score)
+            try:
+                score = int(self.tableWidget_grade.item(i, 3).text())
+                if score > 100 or score < 0:
+                    QMessageBox.critical(self,
+                                    "MyGPAmate",
+                                    "Score should be in the range 0 -100")
+                    return
+                scores.append(score)
+            except:
+                QMessageBox.critical(self,
+                                  "MyGPAmate",
+                                  "Score cannot Empty")
+                return 
         grade_list_object = convert_score_to_grade(scores)
         grade_list = grade_list_object.convert()
         
