@@ -251,7 +251,7 @@ class MainApp(QMainWindow, ui):
             
     def save_grade_changes(self):
         num_row = self.tableWidget_grade.rowCount()
-        num_col = self.tableWidget_grade.columnCount() - 1
+        num_col = self.tableWidget_grade.columnCount() - 2
         
         all_data = []
         for i in range(num_row):
@@ -594,10 +594,10 @@ class MainApp(QMainWindow, ui):
             QMessageBox.critical(self, "Eror 404", "Courses Cannot Exceed !5")
             return
         else:
-            self.tableWidget_course_info.insertRow(row - 1)
+            self.tableWidget_course_info.insertRow(row)
             
         for i in range(3):
-            self.tableWidget_course_info.setItem(row -1 , i, QTableWidgetItem(course_info[course_code][i]))
+            self.tableWidget_course_info.setItem(row , i, QTableWidgetItem(course_info[course_code][i]))
 
     def load_grade_info(self):
         grade_data_handle = update_table("mygpamatedata.db", self.current_grade_table, self.current_grade_level, self.current_grade_semester)
@@ -648,21 +648,44 @@ class MainApp(QMainWindow, ui):
         
         all_data = []
         for row in range(num_row):
-            if row == num_row - 1:
-                break
             course_data = []
             for col in range(num_col):
                 item = self.tableWidget_course_info.item(row, col)
-                if len(str(item)) == 0:
-                    continue
                 course_data.append(item.text())
             all_data.append(tuple(course_data))
         if len(all_data) == 0:
             QMessageBox.critical(self, "Error", "Courses Cannot Be Empty")
             return
+        grade_num_row = self.tableWidget_grade.rowCount()
+        grade_num_col = self.tableWidget_grade.columnCount() - 2
+        grade_data = []
+        for i in range(grade_num_row):
+            row_data = ()
+            for j in range(grade_num_col):
+                item = self.tableWidget_grade.item(i, j).text()
+                row_data = row_data + (item,)
+            grade_data.append(row_data)
+            
+            
+        final_data = []
+        if len(all_data) == len(grade_data):
+            for i in range(len(all_data)):
+                if all_data[i] == grade_data[i][:-1]:
+                    final_data.append(grade_data[i])
+                else:
+                    ...
+        elif len(all_data) > len(grade_data):
+            for i in range(len(grade_data)):
+                if all_data[i] == grade_data[i][:-1]:
+                    final_data.append(grade_data[i])
+            data_dif = len(all_data) - len(grade_data)
+            for k in range(1,data_dif+1):
+                data_to_add = all_data[i+k] + ("",)
+                final_data.append(data_to_add)
+        
         
         data_handle = update_table("mygpamatedata.db", self.current_course_table, self.current_level, self.current_semester) 
-        data_handle.save_courses_to_database(all_data)
+        data_handle.save_courses_to_database(final_data)
         
         # Show Success message 
         self.show_message_box("MyGPAmate - Status", "Courses Added Succesfully", QMessageBox.information, QMessageBox.Ok)
@@ -684,6 +707,10 @@ class MainApp(QMainWindow, ui):
 
             self.current_course_table =  f"{n}{m}Semester"
             
+            self.comboBox_level_3.setCurrentText(str(self.comboBox_level.currentText()))
+            self.comboBox_semester_3.setCurrentText(str(self.comboBox_semester.currentText()))
+            
+                        
             self.load_course_info()
         elif table_type == "Grade":
             self.pushButton_edit_grade.setText("Edit Mode")
@@ -696,6 +723,9 @@ class MainApp(QMainWindow, ui):
             m = self.current_grade_semester.split()[0]
 
             self.current_grade_table =  f"{n}{m}Semester"
+            
+            self.comboBox_level.setCurrentText(str(self.comboBox_level_3.currentText()))
+            self.comboBox_semester.setCurrentText(str(self.comboBox_semester_3.currentText()))
             
             self.load_grade_info()
             
