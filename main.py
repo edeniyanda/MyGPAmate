@@ -41,6 +41,32 @@ class MainApp(QMainWindow, ui):
         else:
             event.ignore()  # Ignore the close event
             
+    def Handle_Ui_Changes(self):
+        self.load_grade_grader()
+        try:
+            self.load_current_user_info()
+            self.tabWidget_main.setCurrentIndex(3)
+            self.tabWidget_main_app.setCurrentIndex(0)
+        except:  
+            self.tabWidget_main.setCurrentIndex(0)
+        self.tabWidget_main.tabBar().setVisible(False)
+        self.tabWidget_main_app.tabBar().setVisible(False)
+        for i in range(2):
+            if i == 0:
+                self.tableWidget_course_info.setColumnWidth(i, 500)
+            elif i == 1:
+                self.tableWidget_course_info.setColumnWidth(i, 100)
+            elif i == 2:
+                self.tableWidget_course_info.setColumnWidth(i, 50)
+                
+        self.tableWidget_grade.setColumnWidth(0, 380)
+        self.tableWidget_course_info.insertRow(0)
+        self.load_timeline_info()
+        self.load_course_info()
+        self.current_grade_table = self.current_course_table
+        self.load_grade_info()
+        self.handle_combox_changes()
+        
     def load_grade_grader(self):
         gradeinst = load_data_from_db("mygpamatedata.db", "GradeGrader")
         data = gradeinst.load_data_for_grade()
@@ -92,31 +118,7 @@ class MainApp(QMainWindow, ui):
         self.lineEdit_set_email.setText(profile_data[5])
         
 
-    def Handle_Ui_Changes(self):
-        self.load_grade_grader()
-        try:
-            self.load_current_user_info()
-            self.tabWidget_main.setCurrentIndex(3)
-            self.tabWidget_main_app.setCurrentIndex(0)
-        except:  
-            self.tabWidget_main.setCurrentIndex(0)
-        self.tabWidget_main.tabBar().setVisible(False)
-        self.tabWidget_main_app.tabBar().setVisible(False)
-        for i in range(2):
-            if i == 0:
-                self.tableWidget_course_info.setColumnWidth(i, 500)
-            elif i == 1:
-                self.tableWidget_course_info.setColumnWidth(i, 100)
-            elif i == 2:
-                self.tableWidget_course_info.setColumnWidth(i, 50)
-                
-        self.tableWidget_grade.setColumnWidth(0, 380)
-        self.tableWidget_course_info.insertRow(0)
-        self.load_timeline_info()
-        self.load_course_info()
-        self.handle_combox_changes()
         # self.tableWidget_course_info.itemSelectionChanged.connect(self.update_button_state)
-        self.load_grade_info()
         
     def Handle_Button(self):
         self.pushButton_get_started.clicked.connect(partial(self.change_welcome_widget_index, 1))        
@@ -657,7 +659,7 @@ class MainApp(QMainWindow, ui):
             QMessageBox.critical(self, "Error", "Courses Cannot Be Empty")
             return
         grade_num_row = self.tableWidget_grade.rowCount()
-        grade_num_col = self.tableWidget_grade.columnCount() - 2
+        grade_num_col = 4
         grade_data = []
         for i in range(grade_num_row):
             row_data = ()
@@ -680,7 +682,7 @@ class MainApp(QMainWindow, ui):
                     final_data.append(grade_data[i])
             data_dif = len(all_data) - len(grade_data)
             for k in range(1,data_dif+1):
-                data_to_add = all_data[i+k] + ("",)
+                data_to_add = all_data[i+k] + ("0",)
                 final_data.append(data_to_add)
         
         
@@ -689,6 +691,9 @@ class MainApp(QMainWindow, ui):
         
         # Show Success message 
         self.show_message_box("MyGPAmate - Status", "Courses Added Succesfully", QMessageBox.information, QMessageBox.Ok)
+    
+        # Refresh Grade Table
+        self.refresh_table("Grade")
     
     
     def handle_combox_changes(self):
