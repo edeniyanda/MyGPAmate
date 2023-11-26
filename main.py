@@ -286,7 +286,7 @@ class MainApp(QMainWindow, ui):
             
     def save_grade_changes(self):
         num_row = self.tableWidget_grade.rowCount()
-        num_col = self.tableWidget_grade.columnCount() - 2
+        num_col = 4
         
         all_data = []
         for i in range(num_row):
