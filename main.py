@@ -67,6 +67,25 @@ class MainApp(QMainWindow, ui):
         self.load_grade_info()
         self.handle_combox_changes()
         
+    def calculategpa(self):
+        num_row = self.tableWidget_grade.rowCount()
+        for i in range(num_row):
+            quality_point = str(int(self.tableWidget_grade.item(i, 2).text()) * int(self.tableWidget_grade.item(i, 5).text()))
+            self.tableWidget_grade.setItem(i, 6, QTableWidgetItem(quality_point))
+        sum_qp = 0    
+        for i in range(num_row):
+            sum_qp += int(self.tableWidget_grade.item(i, 6).text())
+            self.label_eqp.setText(str(sum_qp))
+        sum_cu = 0  
+        for i in range(num_row):
+            sum_cu += int(self.tableWidget_grade.item(i, 2).text())
+            self.label_ecu.setText(str(sum_cu))
+              
+        gpa = round(sum_qp / sum_cu, 2)
+        
+        self.label_gpa.setText(str(gpa))
+    
+    
     def load_grade_grader(self):
         gradeinst = load_data_from_db("mygpamatedata.db", "GradeGrader")
         data = gradeinst.load_data_for_grade()
@@ -145,6 +164,7 @@ class MainApp(QMainWindow, ui):
         self.pushButton_edit_unit.clicked.connect(self.edit_grader)
         self.pushButton_save_unit_change.clicked.connect(self.save_grader)   
         self.pushButton_set_to_default.clicked.connect(self.set_grader_to_default)
+        self.pushButton_clacuategpa.clicked.connect(self.calculategpa)
         
         
     def set_grader_to_default(self):
@@ -247,6 +267,19 @@ class MainApp(QMainWindow, ui):
             grade_to_add = QTableWidgetItem(str(grade_list[i]))
             self.tableWidget_grade.setItem(i, 4, grade_to_add)
             
+            
+        gradeinst = load_data_from_db("mygpamatedata.db", "GradeGrader")
+        data = gradeinst.load_data_for_grade()
+        grader_dict = {}
+        for i in data:
+            grade, value = i[1], i[2]
+            grader_dict[grade] = value
+            
+        for i in range(num_row):
+            grade_val = self.tableWidget_grade.item(i, 4).text()
+            grade_point = QTableWidgetItem(grader_dict[grade_val])
+            self.tableWidget_grade.setItem(i, 5, grade_point)
+            ...
         # QMessageBox.information(self,
         #             "MyGPAmate",
         #             "Graded Successfully")
@@ -600,6 +633,10 @@ class MainApp(QMainWindow, ui):
             
         for i in range(3):
             self.tableWidget_course_info.setItem(row , i, QTableWidgetItem(course_info[course_code][i]))
+            
+        self.lineEdit_course_title.setText("")
+        self.lineEdit_course_code.setText("")
+        self.spinBox_course_unit.setValue(0)
 
     def load_grade_info(self):
         grade_data_handle = update_table("mygpamatedata.db", self.current_grade_table, self.current_grade_level, self.current_grade_semester)
@@ -642,8 +679,11 @@ class MainApp(QMainWindow, ui):
                 row_position = self.tableWidget_course_info.rowCount()
                 if row_position != len(data):
                     self.tableWidget_course_info.insertRow(row_position)
-                
-    
+        try:            
+            self.estimate_grade()
+            self.calculategpa()
+        except:
+            ...
     def save_courses(self):
         num_row = self.tableWidget_course_info.rowCount()
         num_col = self.tableWidget_course_info.columnCount()
@@ -675,7 +715,8 @@ class MainApp(QMainWindow, ui):
                 if all_data[i] == grade_data[i][:-1]:
                     final_data.append(grade_data[i])
                 else:
-                    ...
+                    final_data.append(all_data[i].append("0"))
+                    
         elif len(all_data) > len(grade_data):
             for i in range(len(grade_data)):
                 if all_data[i] == grade_data[i][:-1]:
@@ -713,10 +754,15 @@ class MainApp(QMainWindow, ui):
             self.current_course_table =  f"{n}{m}Semester"
             
             self.comboBox_level_3.setCurrentText(str(self.comboBox_level.currentText()))
-            self.comboBox_semester_3.setCurrentText(str(self.comboBox_semester.currentText()))
-            
-                        
+            self.comboBox_semester_3.setCurrentText(str(self.comboBox_semester.currentText()))          
             self.load_course_info()
+            
+            try:
+                self.estimate_grade()
+                self.calculategpa()
+            except:
+                ...
+
         elif table_type == "Grade":
             self.pushButton_edit_grade.setText("Edit Mode")
             self.statusBar().showMessage("")
@@ -734,9 +780,14 @@ class MainApp(QMainWindow, ui):
             
             self.load_grade_info()
             
+            try:
+                self.estimate_grade()
+                self.calculategpa()
+            except:
+                ...
+
             
        
-        
     def show_message_box(self, title, text, icon, buttons=QMessageBox.Ok | QMessageBox.Cancel):
         mg = QMessageBox()
         mg.setWindowTitle(title)
@@ -750,7 +801,6 @@ def main():
     window = MainApp()
     window.show()
     app.exec_()
-    
-    
+      
 if __name__ == "__main__":
     main()      
