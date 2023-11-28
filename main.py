@@ -143,7 +143,6 @@ class MainApp(QMainWindow, ui):
                 gpa = float(self.label_gpa.text())
                 self.gpas.append(gpa)
                 
-        print(self.gpas)
         
         sum_all_cu = 0
         sum_all_qp = 0
@@ -207,7 +206,6 @@ class MainApp(QMainWindow, ui):
         self.pushButton_save_unit_change.clicked.connect(self.save_grader)   
         self.pushButton_set_to_default.clicked.connect(self.set_grader_to_default)
         self.pushButton_clacuategpa.clicked.connect(self.calculategpa)
-        self.pushButton_gpas.clicked.connect(self.getgpas)
         self.pushButton_plot.clicked.connect(self.displayGraph)
         
         
