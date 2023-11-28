@@ -509,7 +509,7 @@
        </font>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab_4">
        <attribute name="title">
@@ -554,7 +554,7 @@
         <property name="frameShadow">
          <enum>QFrame::Sunken</enum>
         </property>
-        <widget class="QLabel" name="label_20">
+        <widget class="QLabel" name="label_CGPA">
          <property name="geometry">
           <rect>
            <x>40</x>
@@ -767,6 +767,19 @@
         </property>
         <property name="text">
          <string>{name}</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="pushButton_gpas">
+        <property name="geometry">
+         <rect>
+          <x>50</x>
+          <y>110</y>
+          <width>101</width>
+          <height>41</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>gpas</string>
         </property>
        </widget>
       </widget>
@@ -1298,7 +1311,7 @@
        <widget class="QLabel" name="label_gpa">
         <property name="geometry">
          <rect>
-          <x>980</x>
+          <x>990</x>
           <y>100</y>
           <width>81</width>
           <height>41</height>
