@@ -6,7 +6,7 @@ import qdarkstyle
 import sys
 import sqlite3
 from functools import partial
-from appresources import encrypt_password, update_table, settings, load_data_from_db, edittable, convert_score_to_grade
+from appresources import encrypt_password, update_table, settings, load_data_from_db, edittable, convert_score_to_grade, GPAPlotter
 
 
 
@@ -66,6 +66,7 @@ class MainApp(QMainWindow, ui):
         self.current_grade_table = self.current_course_table
         self.load_grade_info()
         self.handle_combox_changes()
+        self.getgpas()
         
     def calculategpa(self):
         num_row = self.tableWidget_grade.rowCount()
@@ -154,10 +155,6 @@ class MainApp(QMainWindow, ui):
                 sum_all_qp += int(self.label_eqp.text())
         
         self.cgpa = round(sum_all_qp/ sum_all_cu, 2)
-        print("sum of Course unit all is ", sum_all_cu)
-        print("sum of Quality point all is ", sum_all_qp)
-        
-        print("CGPA is", self.cgpa)
         self.label_CGPA.setText(str(self.cgpa))
             
         self.comboBox_level.setCurrentText(prev_level)
@@ -211,6 +208,7 @@ class MainApp(QMainWindow, ui):
         self.pushButton_set_to_default.clicked.connect(self.set_grader_to_default)
         self.pushButton_clacuategpa.clicked.connect(self.calculategpa)
         self.pushButton_gpas.clicked.connect(self.getgpas)
+        self.pushButton_plot.clicked.connect(self.displayGraph)
         
         
     def set_grader_to_default(self):
@@ -336,7 +334,12 @@ class MainApp(QMainWindow, ui):
         # QMessageBox.information(self,
         #             "MyGPAmate",
         #             "Graded Successfully")
-            
+    def refresh_gpa_com(self):
+        self.estimate_grade()
+        self.calculategpa()
+        self.getgpas()  
+        
+        
     def save_grade_changes(self):
         num_row = self.tableWidget_grade.rowCount()
         num_col = 4
@@ -351,6 +354,7 @@ class MainApp(QMainWindow, ui):
             
         data_handle = update_table("mygpamatedata.db", self.current_grade_table, self.current_grade_level, self.current_grade_semester) 
         data_handle.save_grade_to_database(all_data)
+        self.refresh_gpa_com()
         QMessageBox.information(self,
                                 "MyGPAmate - Grade",
                                 "Grade Saved Succesfully",
@@ -837,7 +841,14 @@ class MainApp(QMainWindow, ui):
                 self.calculategpa()
             except:
                 ...
-       
+    
+    def displayGraph(self):
+        semesters = ["100L 1st", "100L 2nd", "200L 1st", "200L 2nd", "300L 1st", "300L 2nd", "400L 1st", "400L 2nd"]
+        
+        plotInst = GPAPlotter(semesters, self.gpas)
+        plotInst.plot_gpa_progression()
+        
+      
     def show_message_box(self, title, text, icon, buttons=QMessageBox.Ok | QMessageBox.Cancel):
         mg = QMessageBox()
         mg.setWindowTitle(title)
