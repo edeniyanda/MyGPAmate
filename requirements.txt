@@ -1,0 +1,5 @@
+matplotlib==3.6.2
+numpy==1.23.5
+PyQt5==5.15.10
+PyQt5_sip==12.12.1
+QDarkStyle==3.1
