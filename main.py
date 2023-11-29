@@ -1,6 +1,9 @@
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+import matplotlib.pyplot as plt
+import numpy as np
 from PyQt5.uic import loadUiType
 import qdarkstyle
 import sys
@@ -24,6 +27,14 @@ class MainApp(QMainWindow, ui):
         self.exectue_settings(self.settings_data)
         self.Handle_Button()
         self.load_profile()
+        # Create a Matplotlib figure and canvas
+        self.fig, self.ax = plt.subplots(figsize=(8, 5))
+        self.canvas = FigureCanvas(self.fig)
+
+        # Use QVBoxLayout to add the Matplotlib canvas to the QFrame
+        layout = QVBoxLayout(self.graph_frame)
+        layout.addWidget(self.canvas)
+        
 
     
     def closeEvent(self, event):
@@ -89,6 +100,9 @@ class MainApp(QMainWindow, ui):
         except:
             self.label_gpa.setText("0")
             
+        # Update the Matplotlib plot with the GPA data
+        # self.update_matplotlib_plot()
+            
     
     
     def load_grade_grader(self):
@@ -110,6 +124,7 @@ class MainApp(QMainWindow, ui):
         self.tableWidget_grader.setEditTriggers(QTableWidget.NoEditTriggers)
                   
     def default_values(self):
+        self.semesters = ["100L 1st", "100L 2nd", "200L 1st", "200L 2nd", "300L 1st", "300L 2nd", "400L 1st", "400L 2nd"]
         self.current_level = "100 Level"
         self.current_semester = "First Semester"
         
@@ -206,7 +221,7 @@ class MainApp(QMainWindow, ui):
         self.pushButton_save_unit_change.clicked.connect(self.save_grader)   
         self.pushButton_set_to_default.clicked.connect(self.set_grader_to_default)
         self.pushButton_clacuategpa.clicked.connect(self.calculategpa)
-        self.pushButton_plot.clicked.connect(self.displayGraph)
+        self.pushButton_plot.clicked.connect(self.update_matplotlib_plot)
         
         
     def set_grader_to_default(self):
@@ -840,11 +855,36 @@ class MainApp(QMainWindow, ui):
             except:
                 ...
     
-    def displayGraph(self):
-        semesters = ["100L 1st", "100L 2nd", "200L 1st", "200L 2nd", "300L 1st", "300L 2nd", "400L 1st", "400L 2nd"]
+    def update_matplotlib_plot(self):
+        # Clear the existing plot
+        self.ax.clear()
+
+        # Plot the data
+        self.ax.plot(self.semesters, self.gpas, marker='o', linestyle='-', color='b', label='GPA Progression')
         
-        plotInst = GPAPlotter(semesters, self.gpas)
-        plotInst.plot_gpa_progression()
+        # Add data labels
+        for i, txt in enumerate(self.gpas):
+            self.ax.annotate(f"{txt:.2f}", (self.semesters[i], self.gpas[i]), textcoords="offset points", xytext=(0, 5), ha='center')
+
+        # Highlight important points, e.g., lowest and highest GPAs
+        min_gpa_index = np.argmin(self.gpas)
+        max_gpa_index = np.argmax(self.gpas)
+
+        # Highlight the lowest and highest GPAs
+        self.ax.scatter(self.semesters[min_gpa_index], self.gpas[min_gpa_index], color='red', marker='o', s=150, label=f'Lowest GPA ({self.gpas[min_gpa_index]:.2f})')
+        self.ax.scatter(self.semesters[max_gpa_index], self.gpas[max_gpa_index], color='green', marker='o', s=150, label=f'Highest GPA ({self.gpas[max_gpa_index]:.2f})')
+
+        # Customize the plot as needed
+        self.ax.set_title('GPA Progression Over Semesters')
+        self.ax.set_xlabel('Semester')
+        self.ax.set_ylabel('GPA')
+        self.ax.set_ylim(3.5, 5.0)  # Set y-axis limits for better visualization
+        self.ax.grid(True, linestyle='--', alpha=0.7)
+
+
+        # Add legend and show the plot
+        self.ax.legend()
+        self.canvas.draw()
         
       
     def show_message_box(self, title, text, icon, buttons=QMessageBox.Ok | QMessageBox.Cancel):
