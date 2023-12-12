@@ -25,18 +25,27 @@ class MainApp(QMainWindow, ui):
         self.initial_current_theme = self.settings_data["theme"]
         self.Handle_Ui_Changes()
         self.exectue_settings(self.settings_data)
+        self.statusofall()
         self.Handle_Button()
         self.load_profile()
-        # Create a Matplotlib figure and canvas
-        self.fig, self.ax = plt.subplots(figsize=(8, 5))
-        self.canvas = FigureCanvas(self.fig)
-
+        self.set_graph()
+        
         # Use QVBoxLayout to add the Matplotlib canvas to the QFrame
         layout = QVBoxLayout(self.graph_frame)
         layout.addWidget(self.canvas)
-        
+        try:
+            self.update_matplotlib_plot()
+        except:
+            ...
+    def set_graph(self):
+        # Create a Matplotlib figure and canvas
+            self.fig, self.ax = plt.subplots(figsize=(8, 5))
+            self.canvas = FigureCanvas(self.fig)
 
-    
+    def statusofall(self):
+        rowCount = self.tableWidget_grade.rowCount()
+        if rowCount <=1:
+            self.statusBar().showMessage("📌📌 Go to My Course to add Courses")
     def closeEvent(self, event):
         reply = QMessageBox.question(
             self,
@@ -78,6 +87,7 @@ class MainApp(QMainWindow, ui):
         self.load_grade_info()
         self.handle_combox_changes()
         self.getgpas()
+    
         
     def calculategpa(self):
         num_row = self.tableWidget_grade.rowCount()
@@ -102,9 +112,7 @@ class MainApp(QMainWindow, ui):
             
         # Update the Matplotlib plot with the GPA data
         # self.update_matplotlib_plot()
-            
-    
-    
+        
     def load_grade_grader(self):
         gradeinst = load_data_from_db("mygpamatedata.db", "GradeGrader")
         data = gradeinst.load_data_for_grade()
@@ -167,12 +175,14 @@ class MainApp(QMainWindow, ui):
                 self.comboBox_semester.setCurrentText(gpas_getter[i][j])
                 sum_all_cu  += int(self.label_ecu.text())
                 sum_all_qp += int(self.label_eqp.text())
-        
-        self.cgpa = round(sum_all_qp/ sum_all_cu, 2)
-        self.label_CGPA.setText(str(self.cgpa))
-            
-        self.comboBox_level.setCurrentText(prev_level)
-        self.comboBox_semester.setCurrentText(prev_semester)
+        try:
+            self.cgpa = round(sum_all_qp/ sum_all_cu, 2)
+            self.label_CGPA.setText(str(self.cgpa))
+                
+            self.comboBox_level.setCurrentText(prev_level)
+            self.comboBox_semester.setCurrentText(prev_semester)
+        except:
+            ...
         
     
         
@@ -213,7 +223,7 @@ class MainApp(QMainWindow, ui):
         self.pushButton_light_theme.clicked.connect(partial(self.change_theme, "light"))
         self.pushButton_editprofile.clicked.connect(self.edit_profile)
         self.pushButton_savechanges.clicked.connect(self.save_profile_settings)
-        # self.pushButton_delete_course.clicked.connect(self.delete_current_row)
+        self.pushButton_delete_course.clicked.connect(self.delete_course)
         self.pushButton_edit_grade.clicked.connect(self.edit_grade)
         self.pushButton_save_grade_changes.clicked.connect(self.save_grade_changes)
         self.pushButton_estimate_grade.clicked.connect(self.estimate_grade)
@@ -222,10 +232,11 @@ class MainApp(QMainWindow, ui):
         self.pushButton_set_to_default.clicked.connect(self.set_grader_to_default)
         self.pushButton_clacuategpa.clicked.connect(self.calculategpa)
         self.pushButton_plot.clicked.connect(self.update_matplotlib_plot)
+
         
         
     def set_grader_to_default(self):
-        default_data = [['A', '5'], ['B', '4'], ['C', '3'], ['D', '2'], ['E', '2'], ['F', '1']]
+        default_data = [['A', '5'], ['B', '4'], ['C', '3'], ['D', '2'], ['E', '1'], ['F', '0']]
         
         num_row = self.tableWidget_grader.rowCount()
         num_col = self.tableWidget_grader.columnCount()
@@ -248,6 +259,12 @@ class MainApp(QMainWindow, ui):
         grade_data = tuple(grade_data)
         data = load_data_from_db("mygpamatedata.db", "GradeGrader",  grade_data)
         data.save_data_to_grader()
+        try:
+            self.estimate_grade()
+            self.calculategpa()    
+            self.refresh_gpa_com()
+        except:
+            ...
         QMessageBox.information(self,
                     "MyGPAmate Grader",
                     "Grader Table restored back \nto default Sucesfully",
@@ -285,6 +302,7 @@ class MainApp(QMainWindow, ui):
         try:
             self.estimate_grade()
             self.calculategpa()    
+            self.refresh_gpa_com()
         except:
             ...
         
@@ -307,62 +325,95 @@ class MainApp(QMainWindow, ui):
     def estimate_grade(self):
         num_row = self.tableWidget_grade.rowCount()
         scores = []
-        for i in range(num_row):
-            try:
-                score = int(self.tableWidget_grade.item(i, 3).text())
-                if score > 100 or score < 0:
+        if num_row ==  0:
+            ...
+        else:
+            for i in range(num_row):
+                try:
+                    score = int(self.tableWidget_grade.item(i, 3).text())
+                    if score > 100 or score < 0:
+                        QMessageBox.critical(self,
+                                        "MyGPAmate",
+                                        "Score should be in the range 0 -100")
+                        return
+                    scores.append(score)
+                except:
                     QMessageBox.critical(self,
                                     "MyGPAmate",
-                                    "Score should be in the range 0 -100")
-                    return
-                scores.append(score)
+                                    "Score cannot Empty")
+                    return 
+            grade_list_object = convert_score_to_grade(scores)
+            grade_list = grade_list_object.convert()
+            
+            try:
+                for i in range(num_row):
+                    grade_to_add = QTableWidgetItem(str(grade_list[i]))
+                    self.tableWidget_grade.setItem(i, 4, grade_to_add)
+                    
+  
+                gradeinst = load_data_from_db("mygpamatedata.db", "GradeGrader")
+                data = gradeinst.load_data_for_grade()
+                grader_dict = {}
+                for i in data:
+                    grade, value = i[1], i[2]
+                    grader_dict[grade] = value
+                    
+                for i in range(num_row):
+                    grade_val = self.tableWidget_grade.item(i, 4).text()
+                    grade_point = QTableWidgetItem(grader_dict[grade_val])
+                    self.tableWidget_grade.setItem(i, 5, grade_point)
+                    ...
             except:
-                QMessageBox.critical(self,
-                                  "MyGPAmate",
-                                  "Score cannot Empty")
-                return 
-        grade_list_object = convert_score_to_grade(scores)
-        grade_list = grade_list_object.convert()
-        
-        try:
-            for i in range(num_row):
-                grade_to_add = QTableWidgetItem(str(grade_list[i]))
-                self.tableWidget_grade.setItem(i, 4, grade_to_add)
-                
-                
-            gradeinst = load_data_from_db("mygpamatedata.db", "GradeGrader")
-            data = gradeinst.load_data_for_grade()
-            grader_dict = {}
-            for i in data:
-                grade, value = i[1], i[2]
-                grader_dict[grade] = value
-                
-            for i in range(num_row):
-                grade_val = self.tableWidget_grade.item(i, 4).text()
-                grade_point = QTableWidgetItem(grader_dict[grade_val])
-                self.tableWidget_grade.setItem(i, 5, grade_point)
                 ...
-        except:
-            ...
-        # QMessageBox.information(self,
-        #             "MyGPAmate",
-        #             "Graded Successfully")
+            # QMessageBox.information(self,
+            #             "MyGPAmate",
+            #      `       "Graded Successfully")
     def refresh_gpa_com(self):
         self.estimate_grade()
         self.calculategpa()
-        self.getgpas()  
+        self.getgpas()
+        self.update_matplotlib_plot()
         
         
     def save_grade_changes(self):
         num_row = self.tableWidget_grade.rowCount()
-        num_col = 4
-        
+        if num_row <= 0:
+            QMessageBox.information(
+                self,
+                "Invalid",
+                "Add a Course to Save"
+            )
+            return 
         all_data = []
         for i in range(num_row):
             grade_data = []
-            for j in range(num_col):
+            for j in range(4):
                 itemtoadd = self.tableWidget_grade.item(i, j)
-                grade_data.append(itemtoadd.text())
+                if j == 3:
+                    try:
+                        itemtoadd = itemtoadd.text()
+                        if len(itemtoadd) == 0:
+                            QMessageBox.critical(self,
+                                    "Error",
+                                    "Invalid Score input")
+                            return
+                    except:
+                        QMessageBox.critical(self,
+                                    "Error",
+                                    "Invalid Score input")
+                        return
+                    try:
+                        int(itemtoadd)
+                        grade_data.append(itemtoadd)
+                    except:
+                        QMessageBox.critical(self,
+                                    "Error",
+                                    "Score cannot be a String")
+                        return
+                else:
+                    itemtoadd = itemtoadd.text()
+                    grade_data.append(itemtoadd)
+                     
             all_data.append(tuple(grade_data))  
             
         data_handle = update_table("mygpamatedata.db", self.current_grade_table, self.current_grade_level, self.current_grade_semester) 
@@ -372,6 +423,7 @@ class MainApp(QMainWindow, ui):
                                 "MyGPAmate - Grade",
                                 "Grade Saved Succesfully",
                                 )
+        self.statusBar().showMessage("")
         
     def edit_grade(self):
         if self.pushButton_edit_grade.text() == "Edit Mode":
@@ -504,10 +556,16 @@ class MainApp(QMainWindow, ui):
 
         if data["theme"] == "dark":
             dark_stylesheet = qdarkstyle.load_stylesheet_pyqt5()
-            self.setStyleSheet(dark_stylesheet)
+            self.setStyleSheet(dark_stylesheet)   
+            plt.style.use("dark_background")
+            self.set_graph()
+            self.update_matplotlib_plot()
         else:
             # If the theme is not "dark," set an empty stylesheet to reset the theme.
             self.setStyleSheet("")
+            plt.style.use("default")
+            self.set_graph()
+            self.update_matplotlib_plot()
 
         # Set the font size back to the original value
         self.setFont(current_font)
@@ -529,8 +587,7 @@ class MainApp(QMainWindow, ui):
         self.conn.commit()  # Fetch a single row
         
         self.conn.close()
-        
-        # self.load_course_info()
+    
         self.settings_data = self.load_settings()
         self.exectue_settings(self.settings_data)
             
@@ -631,7 +688,7 @@ class MainApp(QMainWindow, ui):
             if not(len(i)):
                 QMessageBox.warning(self, 'Details Error', 'Details incomplete.')
                 return
-        
+
         if not(len(password)):
             QMessageBox.warning(self, 'Password Empty', 'Password should be 8 characters.')
             return
@@ -642,7 +699,10 @@ class MainApp(QMainWindow, ui):
             return
         else:
             password = encrypt_password(password)
-
+        #  Check Email Compactness
+        if not("@" in email):
+            QMessageBox.warning(self, 'Details Error', 'Invalid Email Address')
+            return
         self.conn = sqlite3.connect("mygpamatedata.db")
         self.cursor = self.conn.cursor()
         
@@ -654,7 +714,7 @@ class MainApp(QMainWindow, ui):
                                 (first_name, last_name, username, password, email, college_name))
             self.conn.commit()
             QMessageBox.information(self, 'Account Created', 'Your account has been created successfully.')
-            self.tabWidget_main.setCurrentIndex(2)
+            self.tabWidget_main.setCurrentIndex(1)
         except sqlite3.Error as e:
             QMessageBox.critical(self, 'Error', f'An error occurred: {e}')
 
@@ -705,14 +765,14 @@ class MainApp(QMainWindow, ui):
         self.lineEdit_course_title.setText("")
         self.lineEdit_course_code.setText("")
         self.spinBox_course_unit.setValue(0)
-
+        
     def load_grade_info(self):
         grade_data_handle = update_table("mygpamatedata.db", self.current_grade_table, self.current_grade_level, self.current_grade_semester)
         grade_data =  grade_data_handle.load_course_from_database() 
         
-        self.tableWidget_grade.setRowCount(1)
         
         if grade_data:
+            self.tableWidget_grade.setRowCount(1)
             for i in range(len(grade_data)):
                 fine_grade_data= grade_data[i]
                 new_fine_grade_data= list(fine_grade_data[1:])
@@ -722,6 +782,10 @@ class MainApp(QMainWindow, ui):
                 row_position = self.tableWidget_grade.rowCount()
                 if row_position != len(grade_data):
                     self.tableWidget_grade.insertRow(row_position) 
+        else:
+            self.tableWidget_grade.setRowCount(0)
+            
+            return
                     
         self.estimate_grade()
         self.calculategpa()
@@ -736,9 +800,8 @@ class MainApp(QMainWindow, ui):
     def load_course_info(self):
         data_handle = update_table("mygpamatedata.db", self.current_course_table, self.current_level, self.current_semester)
         data =  data_handle.load_course_from_database() 
-        
-        self.tableWidget_course_info.setRowCount(1)
         if data:
+            self.tableWidget_course_info.setRowCount(1)
             for i in range(len(data)):
                 fine_data = data[i]
                 new_fine_data = list(fine_data[1:])
@@ -748,16 +811,30 @@ class MainApp(QMainWindow, ui):
                 row_position = self.tableWidget_course_info.rowCount()
                 if row_position != len(data):
                     self.tableWidget_course_info.insertRow(row_position)
+        else:
+            self.tableWidget_course_info.setRowCount(0)
         try:            
             self.estimate_grade()
             self.calculategpa()
         except:
             ...
+    def delete_course(self):
+        selectedRow = self.tableWidget_course_info.currentRow()
+        
+        if selectedRow >= 1:
+            self.tableWidget_course_info.removeRow(selectedRow)
+        
+        try:
+            self.save_courses()
+        except:
+            pass
+            
     def save_courses(self):
         num_row = self.tableWidget_course_info.rowCount()
         num_col = self.tableWidget_course_info.columnCount()
         
         all_data = []
+        final_data = []
         for row in range(num_row):
             course_data = []
             for col in range(num_col):
@@ -770,30 +847,42 @@ class MainApp(QMainWindow, ui):
         grade_num_row = self.tableWidget_grade.rowCount()
         grade_num_col = 4
         grade_data = []
-        for i in range(grade_num_row):
-            row_data = ()
-            for j in range(grade_num_col):
-                item = self.tableWidget_grade.item(i, j).text()
-                row_data = row_data + (item,)
-            grade_data.append(row_data)
+        if grade_num_row == 0:
+            for data in all_data:
+                row_data = data + ("0",)
+                final_data.append(row_data)
+            ...
+        else:
+            for i in range(grade_num_row):
+                row_data = ()
+                for j in range(grade_num_col):
+                    item = self.tableWidget_grade.item(i, j).text()
+                    row_data = row_data + (item,)
+                grade_data.append(row_data)
+               
+            if len(all_data) == len(grade_data):
+                for i in range(len(all_data)):
+                    if all_data[i] == grade_data[i][:-1]:
+                        final_data.append(grade_data[i])
+                    else:
+                        final_data.append(all_data[i] + ("0",))           
+            elif len(all_data) > len(grade_data):
+                for i in range(len(grade_data)):
+                    if all_data[i] == grade_data[i][:-1]:
+                        final_data.append(grade_data[i])
+                    else:
+                        final_data.append(all_data[i] + ("0",))
+                data_dif = len(all_data) - len(grade_data)
+                for k in range(1,data_dif+1):
+                    data_to_add = all_data[i+k] + ("0",)
+                    final_data.append(data_to_add)
+            elif len(all_data) < len(grade_data):
+                for i in range(len(all_data)):
+                    if all_data[i] == grade_data[i][:-1]:
+                        final_data.append(grade_data[i])
+                    else:
+                        final_data.append(all_data[i] + ("0",))
             
-            
-        final_data = []
-        if len(all_data) == len(grade_data):
-            for i in range(len(all_data)):
-                if all_data[i] == grade_data[i][:-1]:
-                    final_data.append(grade_data[i])
-                else:
-                    final_data.append(all_data[i] + ("0",))
-                    
-        elif len(all_data) > len(grade_data):
-            for i in range(len(grade_data)):
-                if all_data[i] == grade_data[i][:-1]:
-                    final_data.append(grade_data[i])
-            data_dif = len(all_data) - len(grade_data)
-            for k in range(1,data_dif+1):
-                data_to_add = all_data[i+k] + ("0",)
-                final_data.append(data_to_add)
         
         
         data_handle = update_table("mygpamatedata.db", self.current_course_table, self.current_level, self.current_semester) 
@@ -804,6 +893,7 @@ class MainApp(QMainWindow, ui):
     
         # Refresh Grade Table
         self.refresh_table("Grade")
+        self.refresh_gpa_com()
     
     
     def handle_combox_changes(self):
@@ -852,6 +942,7 @@ class MainApp(QMainWindow, ui):
             try:
                 self.estimate_grade()
                 self.calculategpa()
+                # self.refresh_gpa_com()
             except:
                 ...
     
@@ -878,9 +969,11 @@ class MainApp(QMainWindow, ui):
         self.ax.set_title('GPA Progression Over Semesters')
         self.ax.set_xlabel('Semester')
         self.ax.set_ylabel('GPA')
-        self.ax.set_ylim(3.5, 5.0)  # Set y-axis limits for better visualization
+        
+        upper_lim = max(self.gpas)
+        lower_lim = min(self.gpas) - 0.4
+        self.ax.set_ylim(lower_lim, 5.0)  # Set y-axis limits for better visualization
         self.ax.grid(True, linestyle='--', alpha=0.7)
-
 
         # Add legend and show the plot
         self.ax.legend()

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1326</width>
-    <height>683</height>
+    <width>1337</width>
+    <height>692</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -509,7 +509,7 @@
        </font>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="tab_4">
        <attribute name="title">
@@ -758,7 +758,7 @@
          </rect>
         </property>
         <property name="text">
-         <string>Add New Courses</string>
+         <string>Add New Course</string>
         </property>
        </widget>
        <widget class="QSpinBox" name="spinBox_course_unit">
@@ -920,6 +920,19 @@
          </property>
         </item>
        </widget>
+       <widget class="QPushButton" name="pushButton_delete_course">
+        <property name="geometry">
+         <rect>
+          <x>1100</x>
+          <y>520</y>
+          <width>141</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Delete Course</string>
+        </property>
+       </widget>
       </widget>
       <widget class="QWidget" name="tab_8">
        <attribute name="title">
@@ -1000,7 +1013,7 @@
        <widget class="QLabel" name="label_25">
         <property name="geometry">
          <rect>
-          <x>290</x>
+          <x>410</x>
           <y>20</y>
           <width>81</width>
           <height>31</height>
@@ -1056,7 +1069,7 @@
        <widget class="QComboBox" name="comboBox_semester_3">
         <property name="geometry">
          <rect>
-          <x>410</x>
+          <x>510</x>
           <y>20</y>
           <width>201</width>
           <height>31</height>
@@ -1076,7 +1089,7 @@
        <widget class="QPushButton" name="pushButton_edit_grade">
         <property name="geometry">
          <rect>
-          <x>700</x>
+          <x>850</x>
           <y>20</y>
           <width>131</width>
           <height>31</height>
@@ -1128,8 +1141,8 @@
        <widget class="QGroupBox" name="groupBox_4">
         <property name="geometry">
          <rect>
-          <x>1020</x>
-          <y>130</y>
+          <x>1030</x>
+          <y>110</y>
           <width>201</width>
           <height>151</height>
          </rect>
@@ -1230,8 +1243,8 @@
        <widget class="QGroupBox" name="groupBox_5">
         <property name="geometry">
          <rect>
-          <x>1020</x>
-          <y>320</y>
+          <x>1030</x>
+          <y>300</y>
           <width>201</width>
           <height>80</height>
          </rect>
