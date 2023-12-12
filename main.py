@@ -45,7 +45,7 @@ class MainApp(QMainWindow, ui):
     def statusofall(self):
         rowCount = self.tableWidget_grade.rowCount()
         if rowCount <=1:
-            self.statusBar().showMessage("📌📌 Go to My Course to add Courses")
+            self.statusBar().showMessage("📌Go to My Course to add Courses📌 ")
     def closeEvent(self, event):
         reply = QMessageBox.question(
             self,
@@ -890,7 +890,9 @@ class MainApp(QMainWindow, ui):
         
         # Show Success message 
         self.show_message_box("MyGPAmate - Status", "Courses Added Succesfully", QMessageBox.information, QMessageBox.Ok)
-    
+        
+        # Update Staus Bar
+        self.statusBar().showMessage("📌Go to My Grade to Add corresponding Grade to your courses📌")
         # Refresh Grade Table
         self.refresh_table("Grade")
         self.refresh_gpa_com()
@@ -903,6 +905,9 @@ class MainApp(QMainWindow, ui):
         self.comboBox_semester_3.currentTextChanged.connect(partial(self.refresh_table, "Grade"))
         
     def refresh_table(self, table_type):
+        self.label_eqp.setText("0")
+        self.label_ecu.setText("0")
+        self.label_gpa.setText("0.0")
         if table_type == "Courses":
             self.current_level = self.comboBox_level.currentText()
             self.current_semester = self.comboBox_semester.currentText()
@@ -923,6 +928,9 @@ class MainApp(QMainWindow, ui):
                 ...
 
         elif table_type == "Grade":
+            self.label_eqp.setText("0")
+            self.label_ecu.setText("0")
+            self.label_gpa.setText("0.0")
             self.pushButton_edit_grade.setText("Edit Mode")
             self.statusBar().showMessage("")
             self.tableWidget_grade.setItem(0, 4, QTableWidgetItem(" "))
