@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>MyGPAmate</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>assets/images/logo.png</normaloff>assets/images/logo.png</iconset>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QTabWidget" name="tabWidget_main">
     <property name="geometry">
