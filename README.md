@@ -65,19 +65,13 @@ This project is licensed under the [MIT License](LICENSE).
 
 - Special thanks to [PyQt](https://riverbankcomputing.com/software/pyqt/) and [Matplotlib](https://matplotlib.org/) for their powerful libraries.
 
+- Special thanks to [Flaticon.com](https://www.flaticon.com) for the visually appealing icons used in the application:
 
+  - [Dashboard icons](https://www.flaticon.com/free-icons/dashboard) created by Eucalyp - Flaticon
+  - [Settings icons](https://www.flaticon.com/free-icons/settings) created by Pixel perfect - Flaticon
+  - [Course icons](https://www.flaticon.com/free-icons/course) created by Freepik - Flaticon
+  - [User icons](https://www.flaticon.com/free-icons/user) created by Freepik - Flaticon
+  - [Grades icons](https://www.flaticon.com/free-icons/grades) created by Freepik - Flaticon
+  - [Scholarship icons](https://www.flaticon.com/free-icons/scholarship) created by srip - Flaticon
 
-
-<a href="https://www.flaticon.com/free-icons/dashboard" title="dashboard icons">Dashboard icons created by Eucalyp - Flaticon</a>
-
-<a href="https://www.flaticon.com/free-icons/dashboard" title="dashboard icons">Dashboard icons created by Eucalyp - Flaticon</a>
-
-<a href="https://www.flaticon.com/free-icons/settings" title="settings icons">Settings icons created by Pixel perfect - Flaticon</a>
-
-<a href="https://www.flaticon.com/free-icons/course" title="course icons">Course icons created by Freepik - Flaticon</a>
-
-<a href="https://www.flaticon.com/free-icons/user" title="user icons">User icons created by Freepik - Flaticon</a>
-
-<a href="https://www.flaticon.com/free-icons/grades" title="grades icons">Grades icons created by Freepik - Flaticon</a>
-
-<a href="https://www.flaticon.com/free-icons/scholarship" title="scholarship icons">Scholarship icons created by srip - Flaticon</a>
+These contributions significantly enhance the visual appeal and functionality of our application.
