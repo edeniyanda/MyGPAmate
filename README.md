@@ -3,6 +3,11 @@
 MyGPAmate is a desktop application built with PyQt5 to help students track their GPA across academic sessions. The application allows users to visualize their GPA trends through a graph generated using Matplotlib. Additionally, MyGPAmate provides users with their Cumulative Grade Point Average (CGPA) for a comprehensive overview of their academic performance.
 
 
+## Screenshots
+
+![Screenshot 1](assets/DEMO/demo1.PNG)
+![Screenshot 2](assets/DEMO/demo2.PNG)
+
 ## Features
 
 - **GPA Tracking:** Easily record and update your grades for each course as the semester progresses.
@@ -46,11 +51,6 @@ MyGPAmate is a desktop application built with PyQt5 to help students track their
 5. Save al Changes and Click on Estimate GPA, this will do the Job
 6. Go  back to My Dashboard tab to the to View the dynamic graph to analyze your GPA trends.
 7. The CGPA will be automatically calculated and displayed.
-
-## Screenshots
-
-![Screenshot 1](assets/DEMO/demo1.PNG)
-![Screenshot 2](assets/DEMO/demo2.PNG)
 
 
 ## Contributing
