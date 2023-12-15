@@ -232,6 +232,9 @@ class MainApp(QMainWindow, ui):
         self.pushButton_set_to_default.clicked.connect(self.set_grader_to_default)
         self.pushButton_clacuategpa.clicked.connect(self.calculategpa)
         self.pushButton_plot.clicked.connect(self.update_matplotlib_plot)
+        self.pushButton_h1.clicked.connect(partial(self.hideAndShowPressed, self.pushButton_h1, self.lineEdit_password_2))
+        self.pushButton_h2.clicked.connect(partial(self.hideAndShowPressed, self.pushButton_h2, self.lineEdit_confirm_password_2))
+        self.pushButton_h3.clicked.connect(partial(self.hideAndShowPressed, self.pushButton_h3, self.lineEdit_password))
 
         
         
@@ -511,18 +514,18 @@ class MainApp(QMainWindow, ui):
         result = mg.exec_()
 
         if result == QMessageBox.Yes:
-            # Go back to welcome Screen
-            self.tabWidget_main.setCurrentIndex(0)
-            
             # Delete current user table
             self.conn = sqlite3.connect("mygpamatedata.db")
             self.cur = self.conn.cursor()
             
             query = "DELETE FROM currentuser"
-            
             self.cur.execute(query)
             self.conn.commit()
             self.conn.close()
+            
+            # Go back to welcome Screen
+            self.tabWidget_main.setCurrentIndex(0)
+            
         elif result == QMessageBox.No:
             # Do nothing
             ...
@@ -671,6 +674,9 @@ class MainApp(QMainWindow, ui):
         
         self.conn.commit()
         self.conn.close()
+        
+        if self.current_user_info == None:
+            raise Exception
 
         
     def create_account(self):
@@ -986,8 +992,19 @@ class MainApp(QMainWindow, ui):
         # Add legend and show the plot
         self.ax.legend()
         self.canvas.draw()
-        
-      
+    
+    def hideAndShowPressed(self, currentButton, currentLineEdit):
+        current_icon = currentButton.icon()
+        current_pixmap = current_icon.pixmap(current_icon.actualSize(QSize(64, 64)))
+
+        # Check if the current icon is the default icon
+        if current_pixmap.toImage() == QIcon("assets/images/view.png").pixmap(QSize(64, 64)).toImage():
+            currentLineEdit.setEchoMode(QLineEdit.Normal)
+            currentButton.setIcon(QIcon("assets/images/hide.png"))
+        else:
+            currentLineEdit.setEchoMode(QLineEdit.Password)
+            currentButton.setIcon(QIcon("assets/images/view.png"))        
+    
     def show_message_box(self, title, text, icon, buttons=QMessageBox.Ok | QMessageBox.Cancel):
         mg = QMessageBox()
         mg.setWindowTitle(title)
