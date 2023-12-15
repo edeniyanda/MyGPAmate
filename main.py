@@ -194,8 +194,10 @@ class MainApp(QMainWindow, ui):
     
     def load_profile(self):
         profile = load_data_from_db("mygpamatedata.db", "users")
-        profile_data = profile.load_data()
         
+        profile_data = profile.load_data()
+        if profile_data is None:
+            return
         self.label_welcome.setText(f"{profile_data[1]}")
         self.lineEdit_set_username.setText(profile_data[3])
         self.lineEdit_set_firstname.setText(profile_data[1])
@@ -635,6 +637,8 @@ class MainApp(QMainWindow, ui):
             self.lineEdit_username.setText("")   
             self.lineEdit_password.setText("")   
             
+        self.load_profile()
+            
     # Create a current User
     def create_current_user(self, data):
         data = tuple(data[1:])
@@ -706,7 +710,7 @@ class MainApp(QMainWindow, ui):
         else:
             password = encrypt_password(password)
         #  Check Email Compactness
-        if not("@" in email):
+        if not("@" in email) or (not("." in email)):
             QMessageBox.warning(self, 'Details Error', 'Invalid Email Address')
             return
         self.conn = sqlite3.connect("mygpamatedata.db")
@@ -725,6 +729,13 @@ class MainApp(QMainWindow, ui):
             QMessageBox.critical(self, 'Error', f'An error occurred: {e}')
 
         self.conn.close()
+        
+        self.lineEdit_user_name_2.setText("")
+        self.lineEdit_first_name_2.setText("")
+        self.lineEdit_last_name_2.setText("")
+        self.lineEdit_email_2.setText("")
+        self.lineEdit_password_2.setText("")
+        self.lineEdit_confirm_password_2.setText("")
 
     # Add new courses
     def add_courses(self):
