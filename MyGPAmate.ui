@@ -14,8 +14,8 @@
    <string>MyGPAmate</string>
   </property>
   <property name="windowIcon">
-   <iconset>
-    <normaloff>assets/images/gpa2.png</normaloff>assets/images/gpa2.png</iconset>
+   <iconset resource="resources.qrc">
+    <normaloff>:/assets/images/gpa2.png</normaloff>:/assets/images/gpa2.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QTabWidget" name="tabWidget_main">
@@ -36,7 +36,7 @@
      </font>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>3</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -124,7 +124,7 @@
        <string/>
       </property>
       <property name="pixmap">
-       <pixmap>assets/images/gpa2.png</pixmap>
+       <pixmap resource="resources.qrc">:/assets/images/gpa2.png</pixmap>
       </property>
      </widget>
     </widget>
@@ -279,8 +279,8 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset>
-         <normaloff>assets/images/view.png</normaloff>assets/images/view.png</iconset>
+        <iconset resource="resources.qrc">
+         <normaloff>:/assets/images/view.png</normaloff>:/assets/images/view.png</iconset>
        </property>
       </widget>
      </widget>
@@ -535,8 +535,8 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset>
-         <normaloff>assets/images/view.png</normaloff>assets/images/view.png</iconset>
+        <iconset resource="resources.qrc">
+         <normaloff>:/assets/images/view.png</normaloff>:/assets/images/view.png</iconset>
        </property>
       </widget>
       <widget class="QPushButton" name="pushButton_h2">
@@ -552,8 +552,8 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset>
-         <normaloff>assets/images/view.png</normaloff>assets/images/view.png</iconset>
+        <iconset resource="resources.qrc">
+         <normaloff>:/assets/images/view.png</normaloff>:/assets/images/view.png</iconset>
        </property>
       </widget>
      </widget>
@@ -580,7 +580,7 @@
        </font>
       </property>
       <property name="currentIndex">
-       <number>4</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab_4">
        <attribute name="title">
@@ -2039,6 +2039,7 @@
  </widget>
  <resources>
   <include location="resources.qrc"/>
+  <include location="../../../.designer/backup/resources.qrc"/>
  </resources>
  <connections/>
 </ui>

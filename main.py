@@ -25,10 +25,11 @@ class MainApp(QMainWindow, ui):
         self.initial_current_theme = self.settings_data["theme"]
         self.Handle_Ui_Changes()
         self.exectue_settings(self.settings_data)
-        self.statusofall()
         self.Handle_Button()
         self.load_profile()
         self.set_graph()
+        if self.tabWidget_main.currentIndex() == 3:
+            self.statusofall()
         
         # Use QVBoxLayout to add the Matplotlib canvas to the QFrame
         layout = QVBoxLayout(self.graph_frame)
@@ -87,7 +88,8 @@ class MainApp(QMainWindow, ui):
         self.load_grade_info()
         self.handle_combox_changes()
         self.getgpas()
-    
+
+
         
     def calculategpa(self):
         num_row = self.tableWidget_grade.rowCount()
@@ -114,7 +116,7 @@ class MainApp(QMainWindow, ui):
         # self.update_matplotlib_plot()
         
     def load_grade_grader(self):
-        gradeinst = load_data_from_db("mygpamatedata.db", "GradeGrader")
+        gradeinst = load_data_from_db("assets/mygpamatedata.db", "GradeGrader")
         data = gradeinst.load_data_for_grade()
 
         self.tableWidget_grader.setRowCount(1)
@@ -189,11 +191,11 @@ class MainApp(QMainWindow, ui):
 
     def save_changes(self):
         data = (1, self.initial_current_theme, "12", "test", self.comboBox_level.currentText(), self.comboBox_semester.currentText())
-        save_data = settings("mygpamatedata.db")
+        save_data = settings("assets/mygpamatedata.db")
         save_data.save_settings(data)
     
     def load_profile(self):
-        profile = load_data_from_db("mygpamatedata.db", "users")
+        profile = load_data_from_db("assets/mygpamatedata.db", "users")
         
         profile_data = profile.load_data()
         if profile_data is None:
@@ -262,7 +264,7 @@ class MainApp(QMainWindow, ui):
                 row_data.append(grade_item.text())
             grade_data.append(row_data)
         grade_data = tuple(grade_data)
-        data = load_data_from_db("mygpamatedata.db", "GradeGrader",  grade_data)
+        data = load_data_from_db("assets/mygpamatedata.db", "GradeGrader",  grade_data)
         data.save_data_to_grader()
         try:
             self.estimate_grade()
@@ -298,7 +300,7 @@ class MainApp(QMainWindow, ui):
                 row_data.append(grade_item.text())
             grade_data.append(row_data)
         grade_data = tuple(grade_data)
-        data = load_data_from_db("mygpamatedata.db", "GradeGrader",  grade_data)
+        data = load_data_from_db("assets/mygpamatedata.db", "GradeGrader",  grade_data)
         data.save_data_to_grader()
         QMessageBox.information(self,
                     "MyGPAmate Grader",
@@ -356,7 +358,7 @@ class MainApp(QMainWindow, ui):
                     self.tableWidget_grade.setItem(i, 4, grade_to_add)
                     
   
-                gradeinst = load_data_from_db("mygpamatedata.db", "GradeGrader")
+                gradeinst = load_data_from_db("assets/mygpamatedata.db", "GradeGrader")
                 data = gradeinst.load_data_for_grade()
                 grader_dict = {}
                 for i in data:
@@ -421,7 +423,7 @@ class MainApp(QMainWindow, ui):
                      
             all_data.append(tuple(grade_data))  
             
-        data_handle = update_table("mygpamatedata.db", self.current_grade_table, self.current_grade_level, self.current_grade_semester) 
+        data_handle = update_table("assets/mygpamatedata.db", self.current_grade_table, self.current_grade_level, self.current_grade_semester) 
         data_handle.save_grade_to_database(all_data)
         self.refresh_gpa_com()
         QMessageBox.information(self,
@@ -479,7 +481,7 @@ class MainApp(QMainWindow, ui):
         new_lastname= self.lineEdit_set_lastname.text()
         new_email = self.lineEdit_set_email.text()
         
-        self.conn = sqlite3.connect("mygpamatedata.db")
+        self.conn = sqlite3.connect("assets/mygpamatedata.db")
         self.cur = self.conn.cursor()
         
         query = 'UPDATE users SET first_name=?, last_name=?, username=?, email=? WHERE user_id = 1'
@@ -517,7 +519,7 @@ class MainApp(QMainWindow, ui):
 
         if result == QMessageBox.Yes:
             # Delete current user table
-            self.conn = sqlite3.connect("mygpamatedata.db")
+            self.conn = sqlite3.connect("assets/mygpamatedata.db")
             self.cur = self.conn.cursor()
             
             query = "DELETE FROM currentuser"
@@ -534,7 +536,7 @@ class MainApp(QMainWindow, ui):
             
     # Load settings from database
     def load_settings(self):
-        info = settings("mygpamatedata.db")
+        info = settings("assets/mygpamatedata.db")
         self.settings_row = info.load_data()
 
         if self.settings_row:
@@ -610,7 +612,7 @@ class MainApp(QMainWindow, ui):
         entered_password = self.lineEdit_password.text()
         entered_password = encrypt_password(entered_password)
          
-        self.conn = sqlite3.connect("mygpamatedata.db")
+        self.conn = sqlite3.connect("assets/mygpamatedata.db")
         self.cur = self.conn.cursor()
             
         query = "SELECT * FROM users WHERE username= ? AND password = ?"
@@ -638,11 +640,12 @@ class MainApp(QMainWindow, ui):
             self.lineEdit_password.setText("")   
             
         self.load_profile()
+        self.statusofall()
             
     # Create a current User
     def create_current_user(self, data):
         data = tuple(data[1:])
-        self.conn = sqlite3.connect("mygpamatedata.db")
+        self.conn = sqlite3.connect("assets/mygpamatedata.db")
         self.cur = self.conn.cursor()
         
         query = '''CREATE TABLE IF NOT EXISTS "currentuser" (
@@ -667,7 +670,7 @@ class MainApp(QMainWindow, ui):
         
     # Load Current User Information
     def load_current_user_info(self):
-        self.conn = sqlite3.connect("mygpamatedata.db")
+        self.conn = sqlite3.connect("assets/mygpamatedata.db")
         self.cur = self.conn.cursor()
         
         query = "SELECT * FROM currentuser"
@@ -713,7 +716,7 @@ class MainApp(QMainWindow, ui):
         if not("@" in email) or (not("." in email)):
             QMessageBox.warning(self, 'Details Error', 'Invalid Email Address')
             return
-        self.conn = sqlite3.connect("mygpamatedata.db")
+        self.conn = sqlite3.connect("assets/mygpamatedata.db")
         self.cursor = self.conn.cursor()
         
 
@@ -784,7 +787,7 @@ class MainApp(QMainWindow, ui):
         self.spinBox_course_unit.setValue(0)
         
     def load_grade_info(self):
-        grade_data_handle = update_table("mygpamatedata.db", self.current_grade_table, self.current_grade_level, self.current_grade_semester)
+        grade_data_handle = update_table("assets/mygpamatedata.db", self.current_grade_table, self.current_grade_level, self.current_grade_semester)
         grade_data =  grade_data_handle.load_course_from_database() 
         
         
@@ -815,7 +818,7 @@ class MainApp(QMainWindow, ui):
         # self.tableWidget_grade.setEditTriggers(QTableWidget.DoubleClicked)  # or any other desired trigger
 
     def load_course_info(self):
-        data_handle = update_table("mygpamatedata.db", self.current_course_table, self.current_level, self.current_semester)
+        data_handle = update_table("assets/mygpamatedata.db", self.current_course_table, self.current_level, self.current_semester)
         data =  data_handle.load_course_from_database() 
         if data:
             self.tableWidget_course_info.setRowCount(1)
@@ -902,7 +905,7 @@ class MainApp(QMainWindow, ui):
             
         
         
-        data_handle = update_table("mygpamatedata.db", self.current_course_table, self.current_level, self.current_semester) 
+        data_handle = update_table("assets/mygpamatedata.db", self.current_course_table, self.current_level, self.current_semester) 
         data_handle.save_courses_to_database(final_data)
         
         # Show Success message 
@@ -1009,12 +1012,12 @@ class MainApp(QMainWindow, ui):
         current_pixmap = current_icon.pixmap(current_icon.actualSize(QSize(64, 64)))
 
         # Check if the current icon is the default icon
-        if current_pixmap.toImage() == QIcon("assets/images/view.png").pixmap(QSize(64, 64)).toImage():
+        if current_pixmap.toImage() == QIcon(":/assets/images/view.png").pixmap(QSize(64, 64)).toImage():
             currentLineEdit.setEchoMode(QLineEdit.Normal)
-            currentButton.setIcon(QIcon("assets/images/hide.png"))
+            currentButton.setIcon(QIcon.fromTheme(":/assets/images/hide.png"))
         else:
             currentLineEdit.setEchoMode(QLineEdit.Password)
-            currentButton.setIcon(QIcon("assets/images/view.png"))        
+            currentButton.setIcon(QIcon.fromTheme(":/assets/images/view.png"))
     
     def show_message_box(self, title, text, icon, buttons=QMessageBox.Ok | QMessageBox.Cancel):
         mg = QMessageBox()
@@ -1023,12 +1026,50 @@ class MainApp(QMainWindow, ui):
         mg.setIcon=(icon)   
         mg.setStandardButtons(buttons) 
         mg.exec_()
+        
+
+
+pBui,_ = loadUiType("ProgressbarUI.ui")
+counter = 0
+
+class ProgressbarUI(QMainWindow, pBui):
+    def __init__(self):
+        QMainWindow.__init__(self)
+        self.setupUi(self)
+        
+        self.setWindowFlag(Qt.FramelessWindowHint)
+        self.setAttribute(Qt.WA_TranslucentBackground)        
+
+
+        # ProgresBar timer 
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.progress)
+        
+        self.timer.start(35)
+        
+    def progress(self):
+        global counter
+        
+        self.progressBar.setValue(counter)
+        
+        if counter > 100:
+            self.timer.stop()
+            ...
+            
+            self.mainapp = MainApp()
+            self.mainapp.show()
+            
+            self.close()
+            
+        counter += 1
+            
+
 
 def main():
-    app = QApplication(sys.argv)
-    window = MainApp()
+    app = QApplication([])
+    window = ProgressbarUI()
     window.show()
     app.exec_()
-      
+
 if __name__ == "__main__":
     main()      

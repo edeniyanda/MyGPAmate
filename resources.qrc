@@ -19,5 +19,10 @@
         <file>assets/images/si.png</file>
         <file>assets/images/su.png</file>
         <file>assets/images/turn-off.png</file>
+        <file>assets/images/view.png</file>
+        <file>assets/images/hide.png</file>
+        <file>assets/images/gpa.png</file>
+        <file>assets/images/gpa (1).png</file>
+        <file>assets/images/gpa2.png</file>
     </qresource>
 </RCC>
