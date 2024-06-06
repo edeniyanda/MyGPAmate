@@ -19,6 +19,7 @@ ui,_ = loadUiType("MyGPAmate.ui")
 class MainApp(QMainWindow, ui):
     def __init__(self):
         QMainWindow.__init__(self)
+        self.setFixedSize(1327, 694)
         self.setupUi(self)
         self.default_values()
         self.settings_data = self.load_settings()
@@ -584,7 +585,7 @@ class MainApp(QMainWindow, ui):
     # Change theme function 
     def change_theme(self, theme:str):
         self.initial_current_theme = theme
-        self.conn = sqlite3.connect('mygpamatedata.db')
+        self.conn = sqlite3.connect('assets/mygpamatedata.db')
         self.cursor = self.conn.cursor()
 
         # Retrieve settings from the database
