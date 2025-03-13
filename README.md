@@ -47,7 +47,7 @@ MyGPAmate is a desktop application built with PyQt5 to help students track their
 1. Launch the application.
 2. Sign up on the application with Email
 3. Go to the My Course Tab to add you Courses for the particular Semester
-4. Switch to the Grade Tab to edit your grades for each Course
+4. Switch to the Grade Tab to edit your grades for each Course.
 5. Save all Changes and Click on Estimate GPA, this will do the Job
 6. Go back to My Dashboard tab to View the dynamic graph to analyze your GPA trends.
 7. The CGPA will be automatically calculated and displayed.
